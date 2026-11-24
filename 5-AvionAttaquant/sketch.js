@@ -65,7 +65,6 @@ function setup() {
   sounds = new WarSounds(alarm);
 
   panel = new ControlPanel('Tâches 3 et 4 — Avion attaquant (3D)', {
-    homeHref: '../../index.html',
   });
   waveSizeSlider = panel.addSlider('Cibles par vague', 1, 10, 5, 1);
   panel.addSlider('Vitesse avion', 0, 15, aircraft.maxSpeed, 0.1, (v) => {
@@ -713,3 +712,4 @@ function windowResized() {
   buildGround();
   buildDecor();
 }
+
