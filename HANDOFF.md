@@ -19,9 +19,9 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 ## État actuel
 
 - `1-Seek/` : Tâches 1 et 2 ✅ (curseurs, debug D + case, dégradé arc-en-ciel qui suit la souris).
-- `5-AvionAttaquant/` ✅ : avion attaquant (pursue + missiles), cibles qui se défendent (evade, dodge, riposte), version 3D avec chars, soldats, radio, sons.
-- `6-WiamSnake/` ✅ : jeu de serpent (intro WIAM en perles, musique Web Audio, ennemis, score, game over).
-- `steering-p5/` ✅ : premier projet (Vehicle partagé, tâches 1 à 4, docs, README auto). Sa version de l'avion est plus ancienne que `5-AvionAttaquant`.
+- `Wiam-AvionAttaquant/` ✅ : avion attaquant (pursue + missiles), cibles qui se défendent (evade, dodge, riposte), version 3D avec chars, soldats, radio, sons.
+- `Wiam-Snake/` ✅ : jeu de serpent (intro WIAM en perles, musique Web Audio, ennemis, score, game over).
+- `steering-p5/` ✅ : premier projet (Vehicle partagé, tâches 1 à 4, docs, README auto). Sa version de l'avion est plus ancienne que `Wiam-AvionAttaquant`.
 - Fichiers IA à la racine : `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.cursorrules`.
 
 ## Prochaines étapes
@@ -39,9 +39,9 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 
 ## Journal des opérations
 
-### 2026-11-24 — Claude — 7-Boids
+### 2026-11-24 — Claude — Wiam-BoidsWebGPU
 - Murmuration de boids en WebGPU (inspirée de la démo jtsorlinis.github.io/BoidsWebGPU montrée en cours) : grille spatiale + tri sur la carte graphique, séparation / alignement / cohésion, oiseaux qui battent des ailes, ciel et champ, vues 2D / 3D, caméra libre.
-- Fichiers : 7-Boids/{index.html, main.js, BoidSimulation.js, BoidRenderer.js, FlyCamera.js, Mat4.js, simShader.js, renderShader.js}.
+- Fichiers : Wiam-BoidsWebGPU/{index.html, main.js, BoidSimulation.js, BoidRenderer.js, FlyCamera.js, Mat4.js, simShader.js, renderShader.js}.
 - Exception aux règles : les oiseaux ne sont pas des Vehicle (calcul sur la carte graphique pour des centaines de milliers d'oiseaux). Nécessite Chrome ou Edge récent.
 
 ### 2026-11-24 — Claude — Tâches 1 et 2 dans 1-Seek + fichiers IA à la racine
@@ -52,11 +52,11 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 ### 2026-11-24 — Claude — README de Wiam
 - En haut du README : le travail, les problèmes rencontrés et leurs solutions ; le README du cours en dessous.
 
-### 2026-11-24 — Claude — 6-WiamSnake
+### 2026-11-24 — Claude — Wiam-Snake
 - Jeu de serpent autonome (p5.js 2.4) : Snake/Segment/PlayerSnake/EnemySnake/IntroSnake/NameDot/Food/Particle/ScorePopup (tous des Vehicle), SpriteFactory, MusicBox.
 - Corrections : `screenToWorld` → `mouseToWorld` (conflit p5 2), cœur dessiné avec `bezierCurveTo`, le serpent vise un point loin dans la direction du cœur (plus de tremblement).
 
-### 2026-11-24 — Claude — 5-AvionAttaquant
+### 2026-11-24 — Claude — Wiam-AvionAttaquant
 - Version autonome de l'app avion (copie des fichiers partagés, chemins corrigés), lien « Accueil » supprimé (404), GitHub Pages activé.
 
 ### 2026-11-23 — Claude — steering-p5

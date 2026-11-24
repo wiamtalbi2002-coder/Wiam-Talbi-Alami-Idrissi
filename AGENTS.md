@@ -3,7 +3,7 @@
 Instructions pour tout agent de code (OpenAI Codex, Claude Code, Gemini CLI, Copilot, Cursor…).
 
 ## Projet
-Fork du cours de Michel Buffa sur les **steering behaviors de Craig Reynolds** en **p5.js**. Chaque dossier numéroté (`1-Seek`, `5-AvionAttaquant`, `6-WiamSnake`…) est une application autonome.
+Fork du cours de Michel Buffa sur les **steering behaviors de Craig Reynolds** en **p5.js**. Chaque dossier numéroté (`1-Seek`, `Wiam-AvionAttaquant`, `Wiam-Snake`…) est une application autonome.
 
 ## À lire avant toute modification
 1. `HANDOFF.md` : état actuel, dernière opération, prochaines étapes.

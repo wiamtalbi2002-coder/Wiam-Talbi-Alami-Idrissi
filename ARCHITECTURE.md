@@ -23,8 +23,8 @@ Ne sont pas des Vehicle : les structures de données (chemin, champ de vecteurs)
 ## 3. Structure du dépôt
 
 - `1-Seek/` … `4-Wander/` : exemples du prof (et leurs corrections). Chaque dossier est autonome : `index.html`, `libraries/` (p5.js 1.7), `vehicle.js`, `sketch.js`, et une spécification `N-Specification.md` quand on y ajoute des tâches.
-- `5-AvionAttaquant/` : l'avion attaquant, la cible qui se défend (version autonome, p5.js 2.4).
-- `6-WiamSnake/` : le jeu de serpent (version autonome, p5.js 2.4).
+- `Wiam-AvionAttaquant/` : l'avion attaquant, la cible qui se défend (version autonome, p5.js 2.4).
+- `Wiam-Snake/` : le jeu de serpent (version autonome, p5.js 2.4).
 - `steering-p5/` : le premier projet complet (classe `Vehicle` partagée, tâches 1 à 4, docs, README automatique).
 
 Pour un nouvel exercice : un nouveau dossier `N-Nom/` autonome (il ne charge jamais de fichiers d'un autre dossier, sinon il ne marche pas sur GitHub Pages), avec sa spécification `N-Specification.md`.
@@ -38,7 +38,7 @@ Pour un nouvel exercice : un nouveau dossier `N-Nom/` autonome (il ne charge jam
 
 ## 5. Attention aux versions de p5.js
 
-- Les dossiers du prof utilisent **p5.js 1.7** ; `steering-p5`, `5-AvionAttaquant` et `6-WiamSnake` utilisent **p5.js 2.4**.
+- Les dossiers du prof utilisent **p5.js 1.7** ; `steering-p5`, `Wiam-AvionAttaquant` et `Wiam-Snake` utilisent **p5.js 2.4**.
 - En p5.js 2 : il y a déjà une fonction globale `screenToWorld` (ne pas en créer une avec ce nom), `bezierVertex` prend un point par appel, et `preload()` n'existe plus (utiliser `async setup()`).
 
 ## 6. Documentation et passage de relais

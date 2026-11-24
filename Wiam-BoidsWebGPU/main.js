@@ -1,4 +1,4 @@
-﻿// main.js — 7-Boids : une murmuration de centaines de milliers d'oiseaux,
+﻿// main.js — Wiam-BoidsWebGPU : une murmuration de centaines de milliers d'oiseaux,
 // calculée sur la carte graphique avec WebGPU (inspiré de la démo
 // jtsorlinis.github.io/BoidsWebGPU montrée en cours).
 

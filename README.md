@@ -4,8 +4,8 @@ Salut ! ici j'explique ce que j'ai fait pour le cours de Michel Buffa sur les st
 
 ## Jouer directement
 
-- 🐍 Mon jeu de serpent : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/6-WiamSnake/
-- ✈️ L'avion attaquant : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/5-AvionAttaquant/
+- 🐍 Mon jeu de serpent : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-Snake/
+- ✈️ L'avion attaquant : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-AvionAttaquant/
 
 ## Comment j'ai trouvé le cours
 
@@ -19,8 +19,8 @@ Avant de coder j'ai lu l'article de Craig Reynolds "Steering Behaviors For Auton
    - Tâche 1 : des vaisseaux avec des curseurs (nombre, vitesse, accélération) et le mode debug avec la touche D.
    - Tâche 2 : un dégradé arc en ciel qui suit la souris avec arrive.
    - Tâches 3 et 4 : un avion qui détecte la cible a 600 px, la poursuit (pursue) et tire des missiles, et la cible qui se défend (evade).
-2. **5-AvionAttaquant/** : la version finale de l'avion, en "3D" avec des chars, des soldats, une radio, des sons et des vagues d'ennemis. C'est une version autonome qui marche toute seule.
-3. **6-WiamSnake/** : mon jeu a moi 💖 un snake girly qui brille, avec mon prénom WIAM en perles au début et le serpent qui passe dedans, une musique mignonne, des ennemis qu'on peut tuer, le score et le game over.
+2. **Wiam-AvionAttaquant/** : la version finale de l'avion, en "3D" avec des chars, des soldats, une radio, des sons et des vagues d'ennemis. C'est une version autonome qui marche toute seule.
+3. **Wiam-Snake/** : mon jeu a moi 💖 un snake girly qui brille, avec mon prénom WIAM en perles au début et le serpent qui passe dedans, une musique mignonne, des ennemis qu'on peut tuer, le score et le game over.
 
 ## Comment j'ai travaillé
 
@@ -40,7 +40,7 @@ J'ai utilisé Claude (l'IA) pour m'aider : dans le chat pour réfléchir et écr
 1. **`npm` n'est pas reconnu** → j'ai pas Node sur mon pc. Solution : `python -m http.server 8080` a la place.
 2. **Je voyais pas le curseur sur ma capture** → en fait Windows capture pas la souris 😅 Avec la touche D (debug) on voit une petite croix là ou est la souris.
 3. **git clone : "repository not found"** → mon fork avait pas le même nom que le repo du prof, il s'appelait `Wiam-Talbi-Alami-Idrissi`. J'ai failli créer un deuxieme fork dans une organisation, heureusement GitHub affichait "fork already exists".
-4. **L'app de l'avion marchait pas toute seule** → elle chargeait des fichiers avec `../../lib` et `../../shared`. J'ai copié tout ce qu'il faut dans 5-AvionAttaquant et corrigé les chemins dans index.html.
+4. **L'app de l'avion marchait pas toute seule** → elle chargeait des fichiers avec `../../lib` et `../../shared`. J'ai copié tout ce qu'il faut dans Wiam-AvionAttaquant et corrigé les chemins dans index.html.
 5. **Le lien "← Accueil" donnait une erreur 404 sur GitHub Pages** → je l'ai enlevé du sketch.js. Aprés le push il était toujours la : c'était le cache, en fenêtre privée c'était bon.
 6. **La cible se défendait mal** : en fuyant tout droit elle se faisait toucher PLUS souvent, parce que le missile va plus vite qu'elle. Solution : elle fuit la menace la plus urgente (distance / vitesse) et elle fait un écart sur le coté (dodge) quand un missile arrive → 2 fois moins touchée.
 7. **Écran noir avec "Cannot redefine property: screenToWorld"** → p5.js 2 a déja une fonction qui s'appelle comme ça ! J'ai renommé la mienne `mouseToWorld`.
@@ -56,7 +56,7 @@ J'ai utilisé Claude (l'IA) pour m'aider : dans le chat pour réfléchir et écr
 
 Dans le terminal, dans le dossier `Wiam-Talbi-Alami-Idrissi` : `python -m http.server 8090`
 
-puis ouvrir http://localhost:8090/6-WiamSnake/
+puis ouvrir http://localhost:8090/Wiam-Snake/
 
 ## Commandes du snake
 
