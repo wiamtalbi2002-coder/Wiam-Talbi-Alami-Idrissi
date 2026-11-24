@@ -39,6 +39,11 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 
 ## Journal des opérations
 
+### 2026-11-24 — Claude — 7-Boids
+- Murmuration de boids en WebGPU (inspirée de la démo jtsorlinis.github.io/BoidsWebGPU montrée en cours) : grille spatiale + tri sur la carte graphique, séparation / alignement / cohésion, oiseaux qui battent des ailes, ciel et champ, vues 2D / 3D, caméra libre.
+- Fichiers : 7-Boids/{index.html, main.js, BoidSimulation.js, BoidRenderer.js, FlyCamera.js, Mat4.js, simShader.js, renderShader.js}.
+- Exception aux règles : les oiseaux ne sont pas des Vehicle (calcul sur la carte graphique pour des centaines de milliers d'oiseaux). Nécessite Chrome ou Edge récent.
+
 ### 2026-11-24 — Claude — Tâches 1 et 2 dans 1-Seek + fichiers IA à la racine
 - Fichiers : `1-Seek/{1-Specification.md, vehicle.js, rainbowGradient.js, controlPanel.js, sketch.js, index.html, style.css}`, `ARCHITECTURE.md`, `HANDOFF.md`, `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.cursorrules`.
 - Fait : tableau de véhicules (TODO du prof), curseurs, debug synchronisé, dégradé arc-en-ciel (Vehicle + arrive).
@@ -56,3 +61,4 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 
 ### 2026-11-23 — Claude — steering-p5
 - Projet de départ : Vehicle (17 comportements de Reynolds), docs, fichiers IA, tâches 1 à 4.
+
