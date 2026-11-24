@@ -7,7 +7,7 @@ canvas {
   display: block;
 }
 
-/* ---------- Panneau de réglages (Tâche 1) ---------- */
+/* ---------- Panneau de réglages (controlPanel.js) ---------- */
 
 body {
   overflow: hidden;
@@ -107,4 +107,45 @@ body {
 .control-panel__checkbox label,
 .control-panel__checkbox input {
   cursor: pointer;
+}
+
+.control-panel__select,
+.control-panel__text {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f2f4f8;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font: inherit;
+}
+
+.control-panel__select option {
+  color: #111;
+}
+
+.control-panel__text {
+  width: 150px;
+}
+
+.control-panel__button {
+  background: #4d6bff;
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.control-panel__button:hover {
+  background: #6a84ff;
+}
+
+.control-panel__info-row {
+  flex-basis: 100%;
+}
+
+.control-panel__info {
+  opacity: 0.75;
+  font-size: 12px;
 }

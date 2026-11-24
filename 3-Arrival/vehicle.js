@@ -244,10 +244,18 @@ class Vehicle {
   }
 
   show() {
-    
+    // Forme ronde (recommandée pour le texte en points) ou triangle.
+    if (this.forme === 'cercle') {
+      push();
+      noStroke();
+      fill(this.couleur ?? 'white');
+      circle(this.pos.x, this.pos.y, this.r * 2);
+      pop();
+      return;
+    }
     stroke(255);
     strokeWeight(2);
-    fill(255);
+    fill(this.couleur ?? 255);
     stroke(0);
     strokeWeight(2);
     push();
@@ -280,23 +288,5 @@ class Vehicle {
     } else if (this.pos.y < -this.r) {
       this.pos.y = height + this.r;
     }
-  }
-}
-
-class Target extends Vehicle {
-  constructor(x, y) {
-    super(x, y);
-    this.vel = p5.Vector.random2D();
-    this.vel.mult(5);
-  }
-
-  show() {
-    stroke(255);
-    strokeWeight(2);
-    fill("#F063A4");
-    push();
-    translate(this.pos.x, this.pos.y);
-    circle(0, 0, this.r * 2);
-    pop();
   }
 }

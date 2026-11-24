@@ -1,4 +1,7 @@
 class Vehicle {
+  // Mode debug partagé (touche D ou case à cocher du panneau).
+  static debug = false;
+
   constructor(x, y) {
     // position du véhicule
     this.pos = createVector(x, y);
@@ -33,54 +36,71 @@ class Vehicle {
     return force;
   }
 
-  // inverse de seek !
+  // Fuite correcte (Reynolds) : on inverse la VITESSE DÉSIRÉE, pas la
+  // force. distanceDeDetection : on ne fuit que si le danger est proche.
   flee(target, distanceDeDetection = Infinity) {
-    return this.seek(target.pos, distanceDeDetection).mult(-1);
+    let desiredSpeed = p5.Vector.sub(this.pos, target);
+    if (desiredSpeed.mag() > distanceDeDetection) {
+      return createVector(0, 0);
+    }
+    desiredSpeed.setMag(this.maxSpeed);
+    let force = p5.Vector.sub(desiredSpeed, this.vel);
+    force.limit(this.maxForce);
+    return force;
+  }
+
+  // Point où sera « vehicle » dans `frames` images d'animation :
+  // position + vitesse × frames.
+  // Amélioration possible (proposée à la question « que faire pour
+  // l'améliorer ? ») : rendre la prédiction proportionnelle à la distance,
+  // comme le dit Reynolds (T = distance / vitesse max) : de loin on vise
+  // loin devant, de près on vise presque la cible elle-même.
+  predictPosition(vehicle, frames, proportional = false) {
+    let t = frames;
+    if (proportional === true) {
+      t = constrain(this.pos.dist(vehicle.pos) / max(this.maxSpeed, 0.001), 0, frames);
+    }
+    let ahead = vehicle.vel.copy().mult(t);
+    ahead.add(vehicle.pos);
+    return ahead;
   }
 
   /* Poursuite d'un point devant la target !
      cette methode renvoie la force à appliquer au véhicule
+     frames : durée de la prédiction (réglée par un curseur, 2 à 30)
   */
-  pursue(target) {
+  pursue(target, frames = 10, proportional = false) {
+    // 1 à 3 - position future de la cible (vitesse × frames + position)
+    let targetAhead = this.predictPosition(target, frames, proportional);
 
-    // On dessine le vecteur vitesse de la target
-    this.drawVector(target.pos, target.vel.copy().mult(10));
+    // 4 - dessin du point devant la target (petit cercle vert) et du
+    // vecteur vitesse de la cible en mode debug
+    if (Vehicle.debug) {
+      this.drawVector(target.pos, target.vel.copy().mult(10));
+    }
+    push();
+    fill('lime');
+    noStroke();
+    circle(targetAhead.x, targetAhead.y, 12);
+    pop();
 
-    // TODO
-    // 1 - calcul de la position future de la cible
-    // on fait une copie de la vitesse de la target
-    // (pour ne pas modifier la vitesse de la target)
-    let targetAhead = target.vel.copy();
-
-    // et on le multiplie par 10 (10 frames)
-    // 2 - prediction dans 10 frames = 10 fois la longueur du vecteur
-    // (on multiplie le vecteur vitesse par 10)
-    // TODO
-    targetAhead.mult(20);
-
-    // 3 - on positionne  la target au bout de ce vecteur
-    // (on ajoute ce vecteur à la position de la target)
-    // TODO
-    targetAhead.add(target.pos);
-
-    // 4 -dessin du point devant la target
-    fill("green");
-    circle(targetAhead.x, targetAhead.y, 16); 
-
-    // 6 - appel à seek avec ce point comme cible 
-    let force = this.seek(targetAhead);
-
-    // n'oubliez pas, on renvoie la force à appliquer au véhicule !
-    return force;
+    // 5 - seek vers ce point
+    return this.seek(targetAhead);
   }
 
-  /* inverse de pursue
-     cette methode renvoie la force à appliquer au véhicule
+  /* inverse de pursue : comme pour flee, on inverse la vitesse désirée
+     (on fuit le point où sera le poursuiveur), pas la force renvoyée.
   */
-  evade(target) {
-    // TODO : on inverse la logique de pursue
-    let force = this.pursue(target).mult(-1);
-    return force;
+  evade(pursuer, frames = 10, proportional = false) {
+    let pursuerAhead = this.predictPosition(pursuer, frames, proportional);
+    if (Vehicle.debug) {
+      push();
+      noFill();
+      stroke('orange');
+      circle(pursuerAhead.x, pursuerAhead.y, 14);
+      pop();
+    }
+    return this.flee(pursuerAhead);
   }
 
   /**  Fonction de poursuite parfaite (avec le point devant la
@@ -94,6 +114,10 @@ class Vehicle {
     const my_angle = asin(sin(target_angle) * speed_ratio);
     const dist = this.pos.dist(vehicle.pos);
     const prediction = dist * sin(my_angle) / sin(PI - my_angle - target_angle);
+    // Pas de solution (cible plus rapide que nous) : on vise la cible.
+    if (!isFinite(prediction) || prediction < 0) {
+      return this.seek(vehicle.pos);
+    }
     const target = vehicle.vel.copy().setMag(prediction).add(vehicle.pos);
     
     drawArrow(vehicle.pos, p5.Vector.mult(vehicle.vel, 20), 'red');
@@ -148,9 +172,11 @@ class Vehicle {
     // Que fait cette ligne ?
     //this.edges();
 
-    // draw velocity vector
+    // draw velocity vector (en mode debug)
     pop();
-    this.drawVector(this.pos, this.vel.copy().mult(10));
+    if (Vehicle.debug) {
+      this.drawVector(this.pos, this.vel.copy().mult(10));
+    }
   }
 
   drawVector(pos, v) {

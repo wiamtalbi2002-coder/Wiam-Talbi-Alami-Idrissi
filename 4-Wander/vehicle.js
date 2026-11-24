@@ -25,6 +25,43 @@ class Vehicle {
     this.pathLength = 10;
     this.pathSpacingInFrames = 5;
     this.pathColor = "white";
+
+    // couleur du véhicule (teinte de l'image et de la traînée)
+    this.couleur = null;
+
+    // pour la déambulation au bruit de Perlin
+    this.noiseOffset = random(1000);
+  }
+
+  // Variante (optionnelle) de wander avec un bruit de Perlin : au lieu de
+  // faire varier wanderTheta au hasard à chaque frame, on le lit dans un
+  // bruit de Perlin, qui change doucement : la trajectoire est plus fluide.
+  wanderPerlin() {
+    let pointDevant = this.vel.copy();
+    pointDevant.setMag(this.distanceCercle);
+    pointDevant.add(this.pos);
+
+    this.noiseOffset += 0.01;
+    let theta = map(noise(this.noiseOffset), 0, 1, -TWO_PI, TWO_PI)
+      + this.vel.heading();
+    let pointSurLeCercle = createVector(
+      this.wanderRadius * cos(theta), this.wanderRadius * sin(theta));
+    pointSurLeCercle.add(pointDevant);
+
+    if (Vehicle.debug) {
+      push();
+      noFill();
+      stroke(255);
+      circle(pointDevant.x, pointDevant.y, this.wanderRadius * 2);
+      fill('green');
+      noStroke();
+      circle(pointSurLeCercle.x, pointSurLeCercle.y, 12);
+      pop();
+    }
+
+    let force = p5.Vector.sub(pointSurLeCercle, this.pos);
+    force.setMag(this.maxForce);
+    return force;
   }
 
   wander() {
@@ -232,7 +269,7 @@ class Vehicle {
       this.path.push(this.pos.copy());
     }
     // si le tableau a plus de this.pathLength éléments, on vire le plus ancien
-    if (this.path.length > this.pathLength) {
+    while (this.path.length > this.pathLength) {
       // On supprime les premiers points mémorisés
       // dans le tableau (pop supprime le dernier, shift le premier)
       this.path.shift();
@@ -240,13 +277,19 @@ class Vehicle {
   }
 
   show() {
-    // dessin du chemin avec un dégradé couleur arc-en-ciel
+    // dessin du chemin (taille limitée à pathLength points) : dégradé de
+    // la couleur du véhicule vers le transparent, ou arc-en-ciel par défaut
     this.path.forEach((p, index) => {
         let inter = map(index, this.path.length, 0, 0, 1);
-        this.pathColor = lerpColor(color("red"), color("blue"), inter);
-        stroke(this.pathColor);
+        if (this.couleur !== null) {
+          this.pathColor = color(red(this.couleur), green(this.couleur),
+            blue(this.couleur), map(index, 0, this.path.length, 40, 255));
+        } else {
+          this.pathColor = lerpColor(color("red"), color("blue"), inter);
+        }
+        noStroke();
         fill(this.pathColor);
-        circle(p.x, p.y, 3);
+        circle(p.x, p.y, map(index, 0, this.path.length, 2, 6));
     });
 
     // dessin du vaisseau

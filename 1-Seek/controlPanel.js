@@ -80,6 +80,56 @@ class ControlPanel {
     return checkbox;
   }
 
+  // Liste déroulante. options : [{ value, label }]. Renvoie le p5.Element.
+  addSelect(label, options, value, onChange = null) {
+    let row = this.createRow(label);
+    let select = createSelect();
+    select.parent(row);
+    select.class('control-panel__select');
+    options.forEach((option) => select.option(option.label, option.value));
+    select.selected(value);
+    select.changed(() => {
+      if (onChange !== null) {
+        onChange(select.value());
+      }
+    });
+    return select;
+  }
+
+  // Bouton d'action.
+  addButton(label, onClick) {
+    let row = this.createRow('');
+    let button = createButton(label);
+    button.parent(row);
+    button.class('control-panel__button');
+    button.mousePressed(() => onClick());
+    return button;
+  }
+
+  // Champ de texte (valeur envoyée à chaque frappe).
+  addText(label, value, onChange = null) {
+    let row = this.createRow(label);
+    let input = createInput(value);
+    input.parent(row);
+    input.class('control-panel__text');
+    input.input(() => {
+      if (onChange !== null) {
+        onChange(input.value());
+      }
+    });
+    return input;
+  }
+
+  // Ligne d'aide (texte libre, modifiable avec .html()).
+  addInfo(text) {
+    let row = this.createRow('');
+    row.addClass('control-panel__info-row');
+    let info = createSpan(text);
+    info.parent(row);
+    info.class('control-panel__info');
+    return info;
+  }
+
   // Case « Debug » liée à Vehicle.debug, synchronisée avec toggleDebug().
   addDebugToggle(label = 'Debug (touche D)') {
     this.debugCheckbox = this.addCheckbox(label, Vehicle.debug, (on) => {

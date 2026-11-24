@@ -63,9 +63,34 @@
   }
 
   // comportement de fuite, inverse de seek
+  // Première version (demandée « dans un premier temps ») : on inverse la
+  // FORCE renvoyée par seek. Problème : force = -(désirée - actuelle)
+  // = actuelle - désirée, donc la vitesse actuelle est aussi inversée et
+  // le véhicule « freine » bizarrement au lieu de fuir franchement.
   flee(target) {
     // inverse de seek !
     return this.seek(target).mult(-1);
+  }
+
+  // Version correcte (article de Craig Reynolds) : c'est la VITESSE
+  // DÉSIRÉE qu'on inverse (elle pointe de la cible vers le véhicule),
+  // puis on applique la formule habituelle force = désirée - actuelle.
+  // panicDistance : on ne fuit que si la cible est assez proche.
+  fleeCorrect(target, panicDistance = Infinity) {
+    let desiredSpeed = p5.Vector.sub(this.pos, target);
+    if (desiredSpeed.mag() > panicDistance) {
+      return createVector(0, 0);
+    }
+    desiredSpeed.setMag(this.maxSpeed);
+    let force = p5.Vector.sub(desiredSpeed, this.vel);
+    force.limit(this.maxForce);
+    return force;
+  }
+
+  // Replace le véhicule à une position aléatoire de l'écran.
+  respawn() {
+    this.pos.set(random(width), random(height));
+    this.vel.set(0, 0);
   }
 
   // --------------------------------------------
