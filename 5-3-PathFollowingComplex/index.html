@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sketch</title>
+    <title>5-3 — suivi de chemin complexe</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -26,8 +26,8 @@
       <input id="snake-separation" type="range" min="0" max="5" step="0.1" value="1.2">
       <output id="snake-separation-value" for="snake-separation">1.2</output>
       <label for="circuit-width">Largeur du circuit</label>
-      <input id="circuit-width" type="range" min="10" max="100" step="1" value="20">
-      <output id="circuit-width-value" for="circuit-width">20 px</output>
+      <input id="circuit-width" type="range" min="10" max="100" step="1" value="35">
+      <output id="circuit-width-value" for="circuit-width">35 px</output>
       <label for="snake-spacing">Distance entre anneaux</label>
       <input id="snake-spacing" type="range" min="5" max="80" step="1" value="20">
       <output id="snake-spacing-value" for="snake-spacing">20 px</output>
@@ -37,7 +37,18 @@
       <label for="entity-spacing">Espacement entre entités</label>
       <input id="entity-spacing" type="range" min="10" max="120" step="1" value="24">
       <output id="entity-spacing-value" for="entity-spacing">24 px</output>
-      <span>T : ajouter un serpent au pointeur · D : debug · Glisser dans le canvas : ajouter des véhicules</span>
+      <label for="vehicle-follow">Poids f (suivi) véhicules</label>
+      <input id="vehicle-follow" type="range" min="0" max="5" step="0.1" value="2">
+      <output id="vehicle-follow-value" for="vehicle-follow">2.0</output>
+      <label for="vehicle-separation">Poids s (séparation) véhicules</label>
+      <input id="vehicle-separation" type="range" min="0" max="5" step="0.1" value="1.2">
+      <output id="vehicle-separation-value" for="vehicle-separation">1.2</output>
+      <label for="circuit-type">Circuit</label>
+      <select id="circuit-type">
+        <option value="complexe" selected>Circuit complexe</option>
+        <option value="simple">Cercle irrégulier (départ)</option>
+      </select>
+      <span>S : véhicule rapide rouge · W : véhicule wander vert · T : ajouter un serpent au pointeur · D : debug · Glisser dans le canvas : ajouter des véhicules</span>
       <output id="snake-count" aria-live="polite">1 serpent</output>
     </header>
   </body>

@@ -21,24 +21,62 @@ let vehicles = [];
 let snakes = [];
 let snakeFollowWeight = 2;
 let snakeSeparationWeight = 1.2;
-let circuitWidth = 20;
+let circuitWidth = 35;
 let snakeSpacing = 20;
 let snakeSize = 22;
 let entitySpacing = 24;
+// Exercice : poids des deux forces des véhicules ordinaires
+let vehicleFollowWeight = 2;
+let vehicleSeparationWeight = 1.2;
+// Exercice : type de circuit (simple ou complexe)
+let circuitType = 'complexe';
 
 function setup() {
-  createCanvas(1200, 800);
+  // Exercice : canvas agrandi (toute la fenêtre sous la barre de réglages)
+  createCanvas(windowWidth, canvasHeight());
   // la fonction suivante créer un chemin composé de plusieurs points
   newPath();
 
   // On crée n véhicules placés aléatoirement sur le canvas
-  const nbVehicules = 1;
+  const nbVehicules = 20;
 
   for (let i = 0; i < nbVehicules; i++) {
     newVehicle(random(width), random(height));
   }
-  //newSnake(path.points[0].x, path.points[0].y);
-  //bindSnakeControls();
+  newSnake(path.points[0].x, path.points[0].y);
+  bindSnakeControls();
+  bindVehicleControls();
+}
+
+function canvasHeight() {
+  let controls = document.getElementById('controls');
+  return windowHeight - (controls ? controls.offsetHeight : 0);
+}
+
+// Exercice : curseurs pour les poids f (suivi) et s (séparation) des
+// véhicules ordinaires, et choix du circuit.
+function bindVehicleControls() {
+  const synchronize = () => {
+    vehicleFollowWeight = Number(document.getElementById('vehicle-follow').value);
+    vehicleSeparationWeight = Number(document.getElementById('vehicle-separation').value);
+    document.getElementById('vehicle-follow-value').value = vehicleFollowWeight.toFixed(1);
+    document.getElementById('vehicle-separation-value').value = vehicleSeparationWeight.toFixed(1);
+    for (const v of vehicles) {
+      if (v.wanderWeight === 0) {
+        v.followPathWeight = vehicleFollowWeight;
+        v.separateWeight = vehicleSeparationWeight;
+      }
+    }
+  };
+  for (const id of ['vehicle-follow', 'vehicle-separation']) {
+    document.getElementById(id).addEventListener('input', synchronize);
+  }
+  document.getElementById('circuit-type').addEventListener('change', (event) => {
+    circuitType = event.target.value;
+    newPath();
+    path.radius = circuitWidth;
+  });
+  synchronize();
 }
 
 function draw() {
@@ -56,7 +94,19 @@ function draw() {
     v.applyBehaviors(neighbors, path);
     // on a regroupé update, draw etc. dans une méthode run (update, borders, display, etc.)
     v.run();
+    // les véhicules qui déambulent réapparaissent de l'autre côté
+    v.edges();
   }
+
+  // Compteurs
+  push();
+  noStroke();
+  fill(0);
+  textSize(14);
+  const verts = vehicles.filter((v) => v.wanderWeight > 0).length;
+  const rouges = vehicles.filter((v) => v.couleur === 'red').length;
+  text(`Véhicules : ${vehicles.length} (dont ${rouges} rapides rouges, ${verts} wander verts)`, 12, height - 12);
+  pop();
   for (const snake of snakes) {
     snake.move(path, neighborsForSnake(snake, neighbors));
     snake.show();
@@ -123,40 +173,36 @@ function bindSnakeControls() {
 }
 
 function newPath() {
-  // Simple suite de points partant de 30, 30 et allant vers 30, height - 30 etc.
   path = new Path();
-  
-  /*
-  let offset = 100;
-  path.addPoint(offset, offset);
-  path.addPoint(300, 180);
-  path.addPoint(width - offset, offset);
-  path.addPoint(width - offset, height - offset);
-  path.addPoint(width / 2, height - offset * 3);
-  path.addPoint(200,550);
-  path.addPoint(offset, height - offset);
-*/
-  // genere un circuit qui ressemble à une piste de course
-  // de voiture, sans angles trop durs
-  // Je voudrais une trentaine de segments
-  // Pas dangles trop aigus
-  // et un peu d'aléatoire pour ne pas générer toujours le même circuit
-  
-  let offset = 100;
-  let nbSegments = 30;
-  let angleStep = (TWO_PI / nbSegments);
-  let radiusMin = min(width, height) / 3;
-  let radiusMax = min(width, height) / 2.5;
+  if (circuitType === 'simple') {
+    // Chemin de départ du prof : un cercle irrégulier de 30 points.
+    let nbSegments = 30;
+    let angleStep = (TWO_PI / nbSegments);
+    let radiusMin = min(width, height) / 3;
+    let radiusMax = min(width, height) / 2.5;
+    for (let i = 0; i < nbSegments; i++) {
+      let angle = i * angleStep;
+      let radius = random(radiusMin, radiusMax);
+      let x = width / 2 + cos(angle) * radius;
+      let y = height / 2 + sin(angle) * radius;
+      path.addPoint(x, y);
+    }
+    return;
+  }
 
-  for (let i = 0; i < nbSegments; i++) {
-    let angle = i * angleStep;
-    // un peu d'aléatoire sur le rayon
-    let radius = random(radiusMin, radiusMax);
-    let x = width / 2 + cos(angle) * radius;
-    let y = height / 2 + sin(angle) * radius;
+  // Exercice : un vrai circuit, plus complexe et plus large, qui occupe
+  // tout le canvas : une boucle avec des épingles, une chicane en S et
+  // des longues lignes droites (courbe fermée échantillonnée en 90 points).
+  let nbPoints = 90;
+  let rx = width * 0.42;
+  let ry = height * 0.38;
+  for (let i = 0; i < nbPoints; i++) {
+    let t = (i / nbPoints) * TWO_PI;
+    let bosse = 1 + 0.22 * sin(3 * t) + 0.12 * cos(5 * t + 0.7);
+    let x = width / 2 + rx * cos(t) * bosse;
+    let y = height / 2 + ry * sin(t) * (1 + 0.18 * cos(2 * t));
     path.addPoint(x, y);
   }
-  
 }
 
 function newVehicle(x, y) {
@@ -164,6 +210,8 @@ function newVehicle(x, y) {
   let maxforce = 0.3;
   let v = new Vehicle(x, y, maxspeed, maxforce);
   v.separationDistance = entitySpacing;
+  v.followPathWeight = vehicleFollowWeight;
+  v.separateWeight = vehicleSeparationWeight;
   vehicles.push(v);
   return v;
 }
@@ -176,17 +224,22 @@ function keyPressed(event) {
     debug = !debug;
     Vehicle.debug = debug;
   } else if(key == "s") {
+    // Exercice : véhicule beaucoup plus rapide que les autres, rouge
     let v = newVehicle(mouseX, mouseY);
     v.maxSpeed = 7;
+    v.maxForce = 0.6;
     v.couleur = "red"
   } else if (key == "w") {
-    // on cree un véhicule wander
+    // Exercice : véhicule qui déambule (wander), dessiné en vert. Il est
+    // dans le même tableau que les autres : les autres gardent leurs
+    // distances avec lui (séparation), et lui aussi avec eux.
     let v = new Vehicle(mouseX, mouseY, 2, 0.25);
     v.wanderWeight = 1;
     v.followPathWeight = 0;
-    v.separateWeight = 0;
+    v.separateWeight = 1;
+    v.separationDistance = entitySpacing;
     v.r = 30;
-    v.couleur = "lightgreen";
+    v.couleur = "green";
     vehicles.push(v);
   }
 }
@@ -194,4 +247,10 @@ function keyPressed(event) {
 function mouseDragged(event) {
   if (event?.target?.closest?.('#controls')) return;
   if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) newVehicle(mouseX, mouseY);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, canvasHeight());
+  newPath();
+  path.radius = circuitWidth;
 }

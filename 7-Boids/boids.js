@@ -62,6 +62,14 @@ class Boid {
      // Pour évitement d'obstacle
     this.largeurZoneEvitementDevantVaisseau = this.r / 2;
 
+    // Exercice : forme du boid ('image', 'triangle' ou 'point')
+    this.forme = image !== undefined ? 'image' : 'point';
+    this.couleur = color(random(150, 255), random(100, 220), 255);
+
+    // Exercice : traînée derrière le boid
+    this.path = [];
+    this.pathLength = 0;
+
   }
 
   // Equivalent de "applyBehaviors" dans le code des autres exemples
@@ -88,7 +96,10 @@ class Boid {
   }
 
   avoid(obstacles) {
-    // TODO
+    // pas d'obstacle : pas de force (sinon getObstacleLePlusProche renvoie undefined)
+    if (obstacles.length === 0) {
+      return createVector(0, 0);
+    }
 
 
     // il regarde par exemple 20 frames devant lui
@@ -422,9 +433,11 @@ class Boid {
 
     if (vitesseDesiree !== null) {
       vitesseDesiree.setMag(this.maxSpeed);
+      // Correction : on renvoie la FORCE (désirée - actuelle), pas la
+      // vitesse désirée (la version de départ renvoyait vitesseDesiree).
       const force = p5.Vector.sub(vitesseDesiree, this.vel);
-      vitesseDesiree.limit(this.maxForce);
-      return vitesseDesiree;
+      force.limit(this.maxForce);
+      return force;
     }
 
     if (Boid.debug) {
@@ -470,14 +483,77 @@ class Boid {
   }
 
   update() {
-    this.pos.add(this.vel);
     this.vel.add(this.acc);
     this.vel.limit(this.maxSpeed);
+    this.pos.add(this.vel);
     this.acc.mult(0);
+
+    // traînée : on mémorise les dernières positions
+    if (this.pathLength > 0) {
+      this.path.push(this.pos.copy());
+    }
+    while (this.path.length > this.pathLength) {
+      this.path.shift();
+    }
+  }
+
+  // Exercice : la cible de la souris (cercle) repousse les boids proches.
+  // Si la distance est inférieure au rayon + un décalage, la vitesse
+  // désirée est OPPOSÉE à la direction de la cible.
+  repousseParCible(cible, decalage = 20) {
+    const d = this.pos.dist(cible.pos);
+    const rayonZone = cible.r + decalage;
+    if (d >= rayonZone || d === 0) {
+      return createVector(0, 0);
+    }
+    let vitesseDesiree = p5.Vector.sub(this.pos, cible.pos);
+    vitesseDesiree.setMag(this.maxSpeed);
+    let force = p5.Vector.sub(vitesseDesiree, this.vel);
+    force.limit(this.maxForce);
+    // plus on est près, plus on fuit fort
+    force.mult(map(d, 0, rayonZone, 3, 1));
+    return force;
+  }
+
+  drawPath() {
+    if (this.path.length < 2) {
+      return;
+    }
+    push();
+    noFill();
+    for (let i = 1; i < this.path.length; i++) {
+      const a = this.path[i - 1];
+      const b = this.path[i];
+      // pas de trait quand le boid traverse un bord (edges)
+      if (abs(a.x - b.x) > 50 || abs(a.y - b.y) > 50) {
+        continue;
+      }
+      stroke(red(this.couleur), green(this.couleur), blue(this.couleur),
+        map(i, 0, this.path.length, 10, 160));
+      strokeWeight(max(1, this.r / 10));
+      line(a.x, a.y, b.x, b.y);
+    }
+    pop();
   }
 
   show() {
-    if (this.image !== undefined) {
+    this.drawPath();
+    if (Boid.debug) {
+      // vecteur vitesse en rouge (règle du projet)
+      this.drawVector(this.pos, p5.Vector.mult(this.vel, 6), 'red');
+    }
+    if (this.forme === 'triangle') {
+      push();
+      translate(this.pos.x, this.pos.y);
+      rotate(this.vel.heading());
+      noStroke();
+      fill(this.couleur);
+      const t = this.r / 2;
+      triangle(-t, -t / 2, -t, t / 2, t, 0);
+      pop();
+      return;
+    }
+    if (this.forme === 'image' && this.image !== undefined) {
       imageMode(CENTER);
 
       // On regarde la direction dans laquelle le boid va :
@@ -493,9 +569,11 @@ class Boid {
 
       return;
     } else {
-      strokeWeight(this.r);
-      stroke(255);
+      push();
+      strokeWeight(this.r / 2);
+      stroke(this.couleur);
       point(this.pos.x, this.pos.y);
+      pop();
     }
   }
 

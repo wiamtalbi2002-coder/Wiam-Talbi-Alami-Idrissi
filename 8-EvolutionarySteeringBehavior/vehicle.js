@@ -13,6 +13,9 @@
 var mr = 0.01;
 
 class Vehicle {
+  // Debug partagé (touche D et case du panneau synchronisées)
+  static debug = false;
+
   constructor(x, y, dna) {
     this.acc = createVector(0, 0);
     this.vel = createVector(0, -2);
@@ -20,6 +23,9 @@ class Vehicle {
     this.r = 4;
     this.maxSpeed = 5;
     this.maxForce = 0.5;
+    // vitesse de base : la vitesse de fuite en dépend (exercice prédateurs)
+    this.vitesseBase = this.maxSpeed;
+    this.enFuite = false;
 
     // La vie, à zéro le véhicule est mort
     this.health = 1;
@@ -114,6 +120,40 @@ class Vehicle {
     this.applyForce(steerB);
   }
 
+  // Exercice : fuir les prédateurs.
+  // On fuit la position FUTURE du prédateur le plus proche (evade) s'il
+  // est dans le rayon de peur. Si selonSante est vrai, la vitesse de
+  // fuite dépend de la santé : un individu en bonne santé fuit plus vite
+  // qu'un individu malade (de 50 % à 150 % de la vitesse de base).
+  fuir(predateurs, rayonPeur, selonSante) {
+    this.enFuite = false;
+    this.maxSpeed = this.vitesseBase;
+    let plusProche = null;
+    let record = rayonPeur;
+    predateurs.forEach((p) => {
+      const d = this.pos.dist(p.pos);
+      if (d < record) {
+        record = d;
+        plusProche = p;
+      }
+    });
+    if (plusProche === null) {
+      return createVector(0, 0);
+    }
+    this.enFuite = true;
+    if (selonSante) {
+      this.maxSpeed = this.vitesseBase * map(constrain(this.health, 0, 1), 0, 1, 0.5, 1.5);
+    }
+    // position future du prédateur (10 frames)
+    const futur = p5.Vector.add(plusProche.pos, p5.Vector.mult(plusProche.vel, 10));
+    // vitesse désirée opposée à la direction du prédateur
+    let desired = p5.Vector.sub(this.pos, futur);
+    desired.setMag(this.maxSpeed);
+    let steer = p5.Vector.sub(desired, this.vel);
+    steer.limit(this.maxForce * 2);
+    return steer;
+  }
+
   clone() {
     // 2 sur mille de chances de clonage
     if (random(1) < 0.002) {
@@ -191,7 +231,7 @@ class Vehicle {
     translate(this.pos.x, this.pos.y);
     rotate(angle);
 
-    if (debug.checked()) {
+    if (Vehicle.debug) {
       strokeWeight(3);
       stroke(0, 255, 0);
       noFill();
@@ -221,6 +261,23 @@ class Vehicle {
     endShape(CLOSE);
 
     pop();
+
+    if (Vehicle.debug) {
+      // vecteur vitesse en rouge (règle du projet)
+      push();
+      stroke('red');
+      strokeWeight(2);
+      line(this.pos.x, this.pos.y, this.pos.x + this.vel.x * 6, this.pos.y + this.vel.y * 6);
+      pop();
+    }
+    if (this.enFuite) {
+      // petit cercle jaune : l'individu fuit un prédateur
+      push();
+      noFill();
+      stroke(255, 255, 0, 150);
+      circle(this.pos.x, this.pos.y, this.r * 6);
+      pop();
+    }
   }
 
 

@@ -2,28 +2,47 @@
 // Daniel Shiffman
 // https://thecodingtrain.com/CodingChallenges/124-flocking-boids.html
 // https://youtu.be/mhjuuHl6qHM
+//
+// 7-Boids — exercices (voir 7-Specification.md) :
+//  - changer la forme des boids (image de poisson, triangle, point) ;
+//  - ajouter une traînée derrière les boids ;
+//  - une cible (cercle) qui suit la souris et repousse les boids proches ;
+//  - touche 'o' : obstacle à la position de la souris, les boids l'évitent ;
+//  - curseurs dans un panneau accordéon (au lieu des sliders superposés).
+// Souris : glisser = ajouter des boids ; touche d = debug ; r = tailles.
 
-// Equivalent du tableau de véhicules dans les autres exemples
 const flock = [];
 let fishImage;
 let requinImage;
-let obstacleSouris;
+let eatSound, aie, ouuu;
 
 let obstacles = [];
-
-let alignSlider, cohesionSlider, separationSlider;
-let labelNbBoids;
-
-let target;
+let cible; // la cible qui suit la souris (c'est un Boid, règle du projet)
 let requin;
+let panel;
+let infoSpan;
+
+const params = {
+  alignWeight: 1.5,
+  cohesionWeight: 1,
+  separationWeight: 3,
+  boundariesWeight: 10,
+  perceptionRadius: 25,
+  maxSpeed: 5,
+  forme: 'image',
+  pathLength: 0,
+  rayonCible: 50,
+  cibleActive: true,
+  requinActif: true,
+  sons: true,
+};
 
 function preload() {
-  // On charge une image de poisson
-  fishImage = loadImage('assets/niceFishtransparent.png');
-  //requinImage = loadImage('assets/requin.png');
+  // Correction : le nom du fichier est niceFishTransparent.png (T majuscule).
+  // Sur GitHub Pages les noms de fichiers sont sensibles à la casse.
+  fishImage = loadImage('assets/niceFishTransparent.png');
   requinImage = loadImage('assets/SharkTransparent.png');
 
-  // Préchargement du son du requin quand il mange un poisson
   soundFormats('mp3', 'ogg');
   eatSound = loadSound('assets/eating.wav');
   aie = loadSound('assets/aie.wav');
@@ -33,193 +52,188 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  // Quelques sliders pour régler les "poids" des trois comportements de flocking
-  // flocking en anglais c'est "se rassembler"
-  // rappel : tableauDesVehicules, min max val step posX posY propriété
-  const posYSliderDeDepart = 10;
-  creerUnSlider("Poids alignment", flock, 0, 2, 1.5, 0.1, 10, posYSliderDeDepart, "alignWeight");
-  creerUnSlider("Poids cohesion", flock, 0, 2, 1, 0.1, 10, posYSliderDeDepart+30, "cohesionWeight");
-  creerUnSlider("Poids séparation", flock, 0, 15, 3, 0.1, 10, posYSliderDeDepart+60,"separationWeight");
-  creerUnSlider("Poids boundaries", flock, 0, 15, 10, 1, 10, posYSliderDeDepart+90,"boundariesWeight");
-  
-  creerUnSlider("Rayon des boids", flock, 4, 40, 6, 1, 10, posYSliderDeDepart+120,"r");
-  creerUnSlider("Perception radius", flock, 15, 60, 25, 1, 10, posYSliderDeDepart+150,"perceptionRadius");
+  creerBoids(200);
 
-  // On créer les "boids". Un boid en anglais signifie "un oiseau" ou "un poisson"
-  // Dans cet exemple c'est l'équivalent d'un véhicule dans les autres exemples
-  for (let i = 0; i < 200; i++) {
-    const b = new Boid(random(width), random(height), fishImage);
-    b.r = random(8, 40);
-    flock.push(b);
-  }
-
-  // Créer un label avec le nombre de boids présents à l'écran
-   labelNbBoids = createP("Nombre de boids : " + flock.length);
-  // couleur blanche
-  labelNbBoids.style('color', 'white');
-  labelNbBoids.position(10, posYSliderDeDepart+180);
-
-  // target qui suit la souris
-  target = createVector(mouseX, mouseY);
-  target.r = 50;
+  // la cible : un Boid qui suit la souris avec seek
+  cible = new Boid(width / 2, height / 2);
+  cible.maxSpeed = 25;
+  cible.maxForce = 4;
+  cible.r = params.rayonCible;
 
   // requin prédateur
-  requin = new Boid(width/2, height/2, requinImage);
+  requin = new Boid(width / 2, height / 2, requinImage);
   requin.r = 40;
   requin.maxSpeed = 7;
   requin.maxForce = 0.5;
 
-  // souris = obstacle
-  obstacleSouris = new Obstacle(mouseX, mouseY, 30, "lightgreen");
-  obstacles.push(obstacleSouris);
+  creerPanneau();
 }
 
-function creerUnSlider(label, tabVehicules, min, max, val, step, posX, posY, propriete) {
-  let slider = createSlider(min, max, val, step);
-  
-  let labelP = createP(label);
-  labelP.position(posX, posY);
-  labelP.style('color', 'white');
+function creerBoids(n) {
+  for (let i = 0; i < n; i++) {
+    ajouterBoid(random(width), random(height));
+  }
+}
 
-  slider.position(posX + 150, posY + 17);
+function ajouterBoid(x, y) {
+  const b = new Boid(x, y, fishImage);
+  b.r = random(8, 40);
+  appliquerParams(b);
+  flock.push(b);
+}
 
-  let valueSpan = createSpan(slider.value());
-  valueSpan.position(posX + 300, posY+17);
-  valueSpan.style('color', 'white');
-  valueSpan.html(slider.value());
+function appliquerParams(b) {
+  b.alignWeight = params.alignWeight;
+  b.cohesionWeight = params.cohesionWeight;
+  b.separationWeight = params.separationWeight;
+  b.boundariesWeight = params.boundariesWeight;
+  b.perceptionRadius = params.perceptionRadius;
+  b.maxSpeed = params.maxSpeed;
+  b.forme = params.forme;
+  b.pathLength = params.pathLength;
+}
 
-  slider.input(() => {
-    valueSpan.html(slider.value());
-    tabVehicules.forEach(vehicle => {
-      vehicle[propriete] = slider.value();
-    });
+function creerPanneau() {
+  panel = new ControlPanel('7 — Boids (flocking)', { open: true });
+  panel.addSlider('Poids alignment', 0, 2, params.alignWeight, 0.1, (v) => { params.alignWeight = v; });
+  panel.addSlider('Poids cohesion', 0, 2, params.cohesionWeight, 0.1, (v) => { params.cohesionWeight = v; });
+  panel.addSlider('Poids séparation', 0, 15, params.separationWeight, 0.1, (v) => { params.separationWeight = v; });
+  panel.addSlider('Poids boundaries', 0, 15, params.boundariesWeight, 1, (v) => { params.boundariesWeight = v; });
+  panel.addSlider('Perception radius', 15, 60, params.perceptionRadius, 1, (v) => { params.perceptionRadius = v; });
+  panel.addSlider('Vitesse max', 1, 10, params.maxSpeed, 0.5, (v) => { params.maxSpeed = v; });
+  panel.addSlider('Nombre de boids', 0, 400, flock.length, 1, (v) => {
+    while (flock.length < v) ajouterBoid(random(width), random(height));
+    while (flock.length > v) flock.pop();
   });
+  panel.addSelect('Forme', [
+    { value: 'image', label: 'Poisson (image)' },
+    { value: 'triangle', label: 'Triangle' },
+    { value: 'point', label: 'Point' },
+  ], params.forme, (v) => { params.forme = v; });
+  panel.addSlider('Traînée', 0, 60, params.pathLength, 1, (v) => { params.pathLength = v; });
+  panel.addSlider('Rayon de la cible', 10, 150, params.rayonCible, 1, (v) => { params.rayonCible = v; });
+  panel.addCheckbox('Cible souris qui repousse', params.cibleActive, (v) => { params.cibleActive = v; });
+  panel.addCheckbox('Requin', params.requinActif, (v) => { params.requinActif = v; });
+  panel.addCheckbox('Sons', params.sons, (v) => { params.sons = v; });
+  panel.addButton('Tailles aléatoires (r)', taillesAleatoires);
+  panel.addButton('Effacer les obstacles', () => { obstacles = []; });
+  panel.addDebugToggle();
+  infoSpan = panel.addInfo('');
+}
 
-  return slider;
+function taillesAleatoires() {
+  flock.forEach((b) => { b.r = random(8, 40); });
 }
 
 function draw() {
   background(0);
-  // une image de fond
-  //imageMode(CORNER);
-  //image(requinImage, 0, 0, width, height);
 
-  // dessin des obstacles
-  obstacles.forEach(obstacle => {
-    obstacle.show();
-  });
-
-    // mettre à jour le nombre de boids
-    labelNbBoids.html("Nombre de boids : " + flock.length);
-
-    // on dessine la cible qui suit la souris
-    target.x = mouseX;
-    target.y = mouseY;
-
+  // la cible suit la souris par steering (seek)
+  cible.r = params.rayonCible;
+  cible.applyForce(cible.seek(createVector(mouseX, mouseY)));
+  cible.update();
+  if (params.cibleActive) {
     push();
-    fill("lightgreen");
-    noStroke();
-    ellipse(target.x, target.y, target.r, target.r);
-     pop();
+    fill(144, 238, 144, 120);
+    stroke('lightgreen');
+    circle(cible.pos.x, cible.pos.y, cible.r * 2);
+    if (Boid.debug) {
+      // zone de répulsion (rayon + décalage)
+      noFill();
+      stroke('red');
+      circle(cible.pos.x, cible.pos.y, (cible.r + 20) * 2);
+    }
+    pop();
+  }
+
+  obstacles.forEach((o) => o.show());
 
   for (let boid of flock) {
-    // équivalent de applyBehaviors, cohesion + separation + alignenement + confinement
+    appliquerParams(boid);
+    // cohesion + separation + alignement + confinement + évitement
     boid.flock(flock, obstacles);
 
-    boid.fleeWithTargetRadius(requin);
-
-    // on tester le comportement fleeWithTargetRadius sur tous les obstacles
-    
-    boid.fleeWithTargetRadius(obstacles[0]);
+    if (params.requinActif) {
+      boid.fleeWithTargetRadius(requin);
+    }
+    if (params.cibleActive) {
+      boid.applyForce(boid.repousseParCible(cible, 20));
+    }
 
     boid.update();
     boid.show();
-  }  
+  }
 
-  // REQUIN
-  let wanderForce = requin.wander();
-  wanderForce.mult(1);
-  requin.applyForce(wanderForce);
+  if (params.requinActif) {
+    deplacerRequin();
+  }
 
-  // calcul du poisson le plus proche du requin
-  let seekForce;
+  infoSpan.textContent = `${flock.length} boids · ${obstacles.length} obstacles · ` +
+    `glisser = boids, o = obstacle`;
+}
+
+function deplacerRequin() {
+  requin.applyForce(requin.wander());
+
   let rayonDeDetection = 70;
-  // dessin du cercle en fil de fer jaune
+  push();
   noFill();
-  stroke("yellow");
-  ellipse(requin.pos.x, requin.pos.y, rayonDeDetection*2, rayonDeDetection*2);
+  stroke('yellow');
+  circle(requin.pos.x, requin.pos.y, rayonDeDetection * 2);
+  pop();
 
   let closest = requin.getVehiculeLePlusProche(flock);
-
   if (closest) {
-    // distance entre le requin et le poisson le plus proche
     let d = p5.Vector.dist(requin.pos, closest.pos);
-    if(d < rayonDeDetection) {
-      // on fonce vers le poisson !!!
-      // SI LE SON N'EST PAS EN TRAIN DE JOUER ALORS ON JOUE LE SON DU REQUIN QUI FONCE VERS LE POISSON
-      if(!ouuu.isPlaying()) {
+    if (d < rayonDeDetection) {
+      if (params.sons && !ouuu.isPlaying()) {
         ouuu.play();
       }
-
-      seekForce = requin.seek(closest.pos);
+      let seekForce = requin.seek(closest.pos);
       seekForce.mult(7);
       requin.applyForce(seekForce);
     }
     if (d < 5) {
-      // on mange !!!!
-      // on retire le poisson du tableau flock
-      let index = flock.indexOf(closest);
-      flock.splice(index, 1);
-      // Le requin grossit en augmentant sa taille
+      // le requin mange le poisson et grossit
+      flock.splice(flock.indexOf(closest), 1);
       requin.r += 1;
-      // On joue le son du requin qui mange
-      eatSound.play();
-      aie.play();
-
+      if (params.sons) {
+        eatSound.play();
+        aie.play();
+      }
     }
   }
   requin.edges();
   requin.update();
   requin.show();
-
-  // souris = obstacle
-  obstacleSouris.pos.x = mouseX;
-  obstacleSouris.pos.y = mouseY;
-
-  // On dessine tous les obstacles
-  obstacles.forEach(obstacle => {
-    obstacle.show();
-  });
-
-  //
 }
 
-function mouseDragged() {
-  const b = new Boid(mouseX, mouseY, fishImage);
-  
-  b.r = random(8, 40);
-
-  flock.push(b);
-
-
+// Vrai seulement si l'événement vient du canvas (pas du panneau)
+function surCanvas(event) {
+  return !(event && event.target && event.target.tagName !== 'CANVAS');
 }
 
-function mousePressed() {
-  // TODO : ajouter un obstacle de taille aléatoire à la position de la souris
-  obstacles.push(new Obstacle(mouseX, mouseY, random(20, 100), "green"));
+function mouseDragged(event) {
+  if (surCanvas(event)) {
+    ajouterBoid(mouseX, mouseY);
+  }
 }
 
 function keyPressed() {
- if (key === 'd') {
-    Boid.debug = !Boid.debug;
+  if (key === 'd') {
+    panel.toggleDebug();
   } else if (key === 'r') {
-    // On donne une taille différente à chaque boid
-    flock.forEach(b => {
-      b.r = random(8, 40);
-    });
-  } else if( key === 'o') {
-    // ajouter un obstacle à la position de la souris
-    let o = new Obstacle(mouseX, mouseY, random(20, 60), "lightgreen");
-    obstacles.push(o);
+    taillesAleatoires();
+  } else if (key === 'o') {
+    // obstacle à la position de la souris, les boids l'évitent
+    obstacles.push(new Obstacle(mouseX, mouseY, random(20, 60), 'lightgreen'));
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  flock.forEach((b) => {
+    b.boundariesWidth = width;
+    b.boundariesHeight = height;
+  });
 }

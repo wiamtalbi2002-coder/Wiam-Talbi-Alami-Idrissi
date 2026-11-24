@@ -1,216 +1,176 @@
 // Daniel Shiffman
 // The Coding Train
 // Coding Challenge 69: Steering Evolution
-
-// Part 1: https://youtu.be/flxOkx0yLrY
-// Part 2: https://youtu.be/XaOVH8ZSRNA
-// Part 3: https://youtu.be/vZUWTlK7D2Q
-// Part 4: https://youtu.be/ykOcaInciBI
-// Part 5: https://youtu.be/VnFF5V5DS8s
+// Part 1: https://youtu.be/flxOkx0yLrY  …  Part 5: https://youtu.be/VnFF5V5DS8s
+//
+// 8-EvolutionarySteeringBehavior — exercices (voir 8-Specification.md) :
+//  - des prédateurs (classe Predator) poursuivent et mangent les individus ;
+//  - les individus fuient les prédateurs, plus ou moins vite selon leur santé ;
+//  - curseurs pour régler les paramètres (panneau accordéon) ;
+//  - clic : ajoute un individu ou un prédateur (au choix dans le panneau).
+// Rappel : ADN = poids nourriture, poids poison, perception nourriture,
+// perception poison. Vert = nourriture, rouge = poison.
 
 const vehicles = [];
+const predators = [];
 const food = [];
 const poison = [];
 
-let debug;
+let panel;
+let infoSpan;
 
-// sliders pour régler la probabilité d'apparition de nourriture et de poison
-let foodProbSlider;
-let poisonProbSlider;
+const params = {
+  foodProb: 0.2,
+  poisonProb: 0.01,
+  mutationRate: 0.01,
+  nbPredateursDepart: 2,
+  vitessePredateur: 3.5,
+  faimPredateur: 0.0015,
+  rayonPeur: 90,
+  fuiteSelonSante: true,
+  clicAjoute: 'individu',
+};
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  afficheGUI();
+  creerPanneau();
   initSimulation();
-
 }
 
-function afficheGUI() {
-  debug = createCheckbox();
-  debug.position(50, 10);
-  debug.style('color', 'white');
-  // label "debug" à gauche de la checkbox
-  let label = createDiv('Debug');
-  label.position(10, 10);
-  label.style('color', 'white');
-
-  // Add label : "click and drag to add vehicles"
-  let labelAddVehicles = createDiv('Click and drag to add vehicles');
-  labelAddVehicles.position(10, 40);
-  labelAddVehicles.style('color', 'white');
-  // add Label "press d to toggle debug mode"
-  let labelToggleDebug = createDiv('Press d to toggle debug mode');
-  labelToggleDebug.position(10, 70);
-  labelToggleDebug.style('color', 'white'); 
-  // add label "vehicles clone themselves when they live enough"
-  let labelClone = createDiv('Vehicles clone themselves when they live enough : possible mutation of genes !');
-  labelClone.position(10, 100);
-  labelClone.style('color', 'white');
-  // add label "vehicles die if they run out of health"
-  let labelDie = createDiv('Vehicles die if they run out of health');
-  labelDie.position(10, 130);
-  labelDie.style('color', 'white');
-  // add label "food increases health, poison decreases health"
-  let labelFoodPoison = createDiv('Food increases health, poison decreases health');
-  labelFoodPoison.position(10, 160);
-  labelFoodPoison.style('color', 'white');
-  // add label "green dots: food, red dots: poison"
-  let labelFoodPoisonDots = createDiv('Green dots: food, red dots: poison');
-  labelFoodPoisonDots.position(10, 190);
-  labelFoodPoisonDots.style('color', 'white');
-  // add label : vehicle color indicates its health (green=healthy, red=sick)
-  let labelHealthColor = createDiv('Vehicle color indicates its health (green=healthy, red=sick)');
-  labelHealthColor.position(10, 220);
-  labelHealthColor.style('color', 'white');
-  // add label : vehicle DNA is made of 4 genes: radius of perception for food, radius of perception for poison, attraction weight for food, repulsion weight for poison
-  let labelDNA = createDiv('Vehicle DNA: perception radius for food & poison, attraction weight for food, repulsion weight for poison');
-  labelDNA.position(10, 250);
-  labelDNA.style('color', 'white');
-  // label : weights can be negative or positive
-  let labelWeights = createDiv('Weights can be negative or positive');
-  labelWeights.position(10, 280);
-  labelWeights.style('color', 'white');
-
-  // en haut à droite : curseur pour régler la probabilité d'apparition de nourriture
-  let labelFoodProb = createDiv('Food Probability');
-  labelFoodProb.position(width - 320, 10);
-  labelFoodProb.style('color', 'white');
-  foodProbSlider = createSlider(0, 1, 0.2, 0.01);
-  foodProbSlider.position(width - 200, 10);
-
-  // en haut à droite : curseur pour régler la probabilité d'apparition de poison
-  let labelPoisonProb = createDiv('Poison Probability');
-  labelPoisonProb.position(width - 320, 40);
-  labelPoisonProb.style('color', 'white');
-  poisonProbSlider = createSlider(0, 1, 0.01, 0.01);
-  poisonProbSlider.position(width - 200, 40);
-
-  // Ajout d'un bouton reset pour remettre la simulation à zéro
-  let resetButton = createButton('Reset Simulation');
-  resetButton.position(width - 150, 70);
-  resetButton.mousePressed(() => {
-    initSimulation();
-  });
+function creerPanneau() {
+  panel = new ControlPanel('8 — évolution, nourriture, poison et prédateurs', { open: true });
+  panel.addSlider('Proba. nourriture', 0, 1, params.foodProb, 0.01, (v) => { params.foodProb = v; });
+  panel.addSlider('Proba. poison', 0, 1, params.poisonProb, 0.01, (v) => { params.poisonProb = v; });
+  panel.addSlider('Taux de mutation', 0, 0.2, params.mutationRate, 0.005, (v) => { params.mutationRate = v; });
+  panel.addSlider('Prédateurs au départ', 0, 10, params.nbPredateursDepart, 1, (v) => { params.nbPredateursDepart = v; });
+  panel.addSlider('Vitesse prédateurs', 1, 8, params.vitessePredateur, 0.1, (v) => { params.vitessePredateur = v; });
+  panel.addSlider('Faim prédateurs', 0, 0.01, params.faimPredateur, 0.0005, (v) => { params.faimPredateur = v; });
+  panel.addSlider('Rayon de peur', 0, 250, params.rayonPeur, 5, (v) => { params.rayonPeur = v; });
+  panel.addCheckbox('Fuite plus rapide si bonne santé', params.fuiteSelonSante,
+    (v) => { params.fuiteSelonSante = v; });
+  panel.addSelect('Le clic ajoute', [
+    { value: 'individu', label: 'un individu' },
+    { value: 'predateur', label: 'un prédateur' },
+  ], params.clicAjoute, (v) => { params.clicAjoute = v; });
+  panel.addButton('Recommencer', initSimulation);
+  panel.addDebugToggle();
+  infoSpan = panel.addInfo('');
 }
 
 function initSimulation() {
   vehicles.length = 0;
-    food.length = 0;
-    poison.length = 0;
-    // recréer 50 véhicules
-    for (let i = 0; i < 50; i++) {
-      const x = random(width);
-      const y = random(height);
-      vehicles[i] = new Vehicle(x, y);
-    }
-    // recréer 40 éléments de nourriture
-    for (let i = 0; i < 40; i++) {
-      const x = random(width);
-      const y = random(height);
-      food.push(createVector(x, y));
-    }
-    // recréer 20 éléments de poison
-    for (let i = 0; i < 20; i++) {
-      const x = random(width);
-      const y = random(height);
-      poison.push(createVector(x, y));
-    }
-    // remettre les sliders à leur valeur par défaut
-    foodProbSlider.value(0.2);
-    poisonProbSlider.value(0.01);
+  predators.length = 0;
+  food.length = 0;
+  poison.length = 0;
+  for (let i = 0; i < 50; i++) {
+    vehicles.push(new Vehicle(random(width), random(height)));
+  }
+  for (let i = 0; i < 40; i++) {
+    food.push(createVector(random(width), random(height)));
+  }
+  for (let i = 0; i < 20; i++) {
+    poison.push(createVector(random(width), random(height)));
+  }
+  for (let i = 0; i < params.nbPredateursDepart; i++) {
+    ajouterPredateur(random(width), random(height));
+  }
 }
 
+function ajouterPredateur(x, y) {
+  const p = new Predator(x, y);
+  predators.push(p);
+  return p;
+}
 
-// appelée 60 fois par seconde
 function draw() {
   background(0);
 
-  // afficher le nombre de véhicules
-  fill(255);
-  textSize(16);
-  text('Vehicles: ' + vehicles.length, 10, height - 10);
-  
-  // Afficher la probabilité de nourriture et poison
-  fill(255);
-  textSize(16);
-  text('Food Prob: ' + foodProbSlider.value().toFixed(2), foodProbSlider.x * 0.8, foodProbSlider.y + 15);
-  text('Poison Prob: ' + poisonProbSlider.value().toFixed(2), poisonProbSlider.x * 0.8, poisonProbSlider.y + 15);
+  // taux de mutation (variable globale mr de vehicle.js)
+  mr = params.mutationRate;
 
-  // On fait apparaitre aléatoirement de la nourriture
-  if (random(1) < foodProbSlider.value()) {
-    const x = random(width);
-    const y = random(height);
-    food.push(createVector(x, y));
+  if (random(1) < params.foodProb) {
+    food.push(createVector(random(width), random(height)));
+  }
+  if (random(1) < params.poisonProb) {
+    poison.push(createVector(random(width), random(height)));
   }
 
-  // On fait apparaitre aléatoirement du poison
-  if (random(1) < poisonProbSlider.value()) {
-    const x = random(width);
-    const y = random(height);
-    poison.push(createVector(x, y));
+  noStroke();
+  fill(0, 255, 0);
+  food.forEach((f) => ellipse(f.x, f.y, 4, 4));
+  fill(255, 0, 0);
+  poison.forEach((p) => ellipse(p.x, p.y, 4, 4));
+
+  // Prédateurs : chasse, puis déplacement
+  for (let i = predators.length - 1; i >= 0; i--) {
+    const p = predators[i];
+    p.maxSpeed = params.vitessePredateur;
+    p.faim = params.faimPredateur;
+    p.boundaries();
+    p.chasser(vehicles);
+    p.update();
+    p.display();
+    if (p.dead()) {
+      predators.splice(i, 1);
+    }
   }
 
-  // on dessine la nourriture
-  for (let i = 0; i < food.length; i++) {
-    fill(0, 255, 0);
-    noStroke();
-    ellipse(food[i].x, food[i].y, 4, 4);
-  }
-
-  // on dessine le poison
-  for (let i = 0; i < poison.length; i++) {
-    fill(255, 0, 0);
-    noStroke();
-    ellipse(poison[i].x, poison[i].y, 4, 4);
-  }
-
-  // On parcourt la liste à l'envers pour pouvoir supprimer
-  // des éléments sans problème. Astuce connue...
+  // Individus : liste parcourue à l'envers pour pouvoir supprimer
   for (let i = vehicles.length - 1; i >= 0; i--) {
-    // Comportement "confinement" dans le canvas (les vehicules
-    // ne peuvent pas sortir de l'écran, ils sont repoussés
-    // par les bords)
-    vehicles[i].boundaries();
+    const v = vehicles[i];
+    v.boundaries();
+    v.behaviors(food, poison);
+    v.applyForce(v.fuir(predators, params.rayonPeur, params.fuiteSelonSante));
+    v.update();
+    v.display();
 
-    // attirés par la nourriture et repoussés par le poison
-    vehicles[i].behaviors(food, poison);
-
-    vehicles[i].update();
-    vehicles[i].display();
-
-    // 0.002% de chances de clonage dans cette fonction
-    // voir le code de clone() dans vehicule.js
-    const newVehicle = vehicles[i].clone();
-
-    // si par chance le véhicule a été cloné
-    // plus sa durée de vie est grande, plus il a de
-    // chances d'être cloné....
+    const newVehicle = v.clone();
     if (newVehicle != null) {
       vehicles.push(newVehicle);
     }
 
-    // Si le véhicule est mort, alors on le retire du tableau
-    // et on ajoute un élément food à sa position
-    if (vehicles[i].dead()) {
-      const x = vehicles[i].pos.x;
-      const y = vehicles[i].pos.y;
-      food.push(createVector(x, y));
+    // mort : il devient de la nourriture
+    if (v.dead()) {
+      food.push(createVector(v.pos.x, v.pos.y));
       vehicles.splice(i, 1);
     }
   }
+
+  const mangés = predators.reduce((s, p) => s + p.nbMangés, 0);
+  infoSpan.textContent = `${vehicles.length} individus · ${predators.length} prédateurs · ` +
+    `${mangés} mangés · clic = ${params.clicAjoute === 'individu' ? 'individu' : 'prédateur'}, glisser = individus`;
 }
 
-// on ajoute un véhicule à la position de la souris 
-// quand on clique et déplace la souris
-function mouseDragged() {
-  vehicles.push(new Vehicle(mouseX, mouseY));
+// Vrai seulement si l'événement vient du canvas (pas du panneau)
+function surCanvas(event) {
+  return !(event && event.target && event.target.tagName !== 'CANVAS');
 }
 
+function mousePressed(event) {
+  if (!surCanvas(event)) {
+    return;
+  }
+  if (params.clicAjoute === 'predateur') {
+    ajouterPredateur(mouseX, mouseY);
+  } else {
+    vehicles.push(new Vehicle(mouseX, mouseY));
+  }
+}
 
-// Ecouteur de touches pour activer/désactiver le mode debug
+function mouseDragged(event) {
+  if (surCanvas(event)) {
+    vehicles.push(new Vehicle(mouseX, mouseY));
+  }
+}
+
 function keyPressed() {
   if (key === 'd' || key === 'D') {
-    // set the checkbox state to the opposite of its current state
-    debug.checked(!debug.checked());
+    panel.toggleDebug();
+  } else if (key === 'p') {
+    ajouterPredateur(mouseX, mouseY);
   }
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }

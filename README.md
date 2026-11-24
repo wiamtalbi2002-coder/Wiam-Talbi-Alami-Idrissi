@@ -6,6 +6,20 @@ Salut ! ici j'explique ce que j'ai fait pour le cours de Michel Buffa sur les st
 
 - 🐍 Mon jeu de serpent : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-Snake/
 - ✈️ L'avion attaquant : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-AvionAttaquant/
+- 🐦 Les boids en WebGPU (Chrome / Edge) : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-BoidsWebGPU/
+
+## Les exercices du cours
+
+Chaque dossier a sa spec (`N-Specification.md`) avec ce que j'ai fait et les réponses aux questions du cours.
+
+- 1-Seek : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/1-Seek/
+- 2-PursueEvade : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/2-PursueEvade/
+- 3-Arrival : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/3-Arrival/
+- 4-Wander : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/4-Wander/
+- 5-3 suivi de chemin : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/5-3-PathFollowingComplex/
+- 6 évitement d'obstacles : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/6-ObstacleAvoidance/
+- 7 boids : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/7-Boids/
+- 8 évolution + prédateurs : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/8-EvolutionarySteeringBehavior/
 
 ## Comment j'ai trouvé le cours
 

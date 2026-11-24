@@ -18,7 +18,17 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 
 ## État actuel
 
-- `1-Seek/` : Tâches 1 et 2 ✅ (curseurs, debug D + case, dégradé arc-en-ciel qui suit la souris).
+- Exercices du cours (dossiers du prof, chacun avec sa `N-Specification.md`, panneau accordéon `controlPanel.js`, debug D + case) :
+  - `1-Seek/` ✅ tâches 1, 2 et 3 (seek, flee corrigé, réapparition, Targets).
+  - `2-PursueEvade/` ✅ pursue / evade, prédiction, chat et souris, balles rebondissantes.
+  - `3-Arrival/` ✅ arrive, serpent, formation en V, texte, grille.
+  - `4-Wander/` ✅ curseurs, couleurs, traînée, Perlin.
+  - `5-1`, `5-2` : exemples à étudier (inchangés). `5-3-PathFollowingComplex/` ✅ circuit complexe, véhicules s / w.
+  - `6-ObstacleAvoidance/` ✅ avoid ahead/ahead2, longueur dynamique, wander, évitement entre véhicules.
+  - `7-Boids/` ✅ formes, traînée, cible qui repousse, obstacles (o).
+  - `8-EvolutionarySteeringBehavior/` ✅ prédateurs, fuite selon la santé, curseurs.
+- Les projets perso sont préfixés `Wiam-` (renommés depuis 5-AvionAttaquant, 6-WiamSnake, 7-Boids).
+- `Wiam-BoidsWebGPU/` ✅ murmuration WebGPU (Chrome / Edge).
 - `Wiam-AvionAttaquant/` ✅ : avion attaquant (pursue + missiles), cibles qui se défendent (evade, dodge, riposte), version 3D avec chars, soldats, radio, sons.
 - `Wiam-Snake/` ✅ : jeu de serpent (intro WIAM en perles, musique Web Audio, ennemis, score, game over).
 - `steering-p5/` ✅ : premier projet (Vehicle partagé, tâches 1 à 4, docs, README auto). Sa version de l'avion est plus ancienne que `Wiam-AvionAttaquant`.
@@ -26,8 +36,9 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 
 ## Prochaines étapes
 
-- Attendre les prochaines consignes du prof (2-PursueEvade, 3-Arrival, 4-Wander…).
+- Attendre les prochaines consignes du prof (projets : circuit, etc. — pas encore faits).
 - Chaque nouvelle tâche : dans le dossier de l'exercice, avec sa `N-Specification.md`.
+- Ne PAS fusionner `upstream/main` d'un bloc : les commits du prof contiennent ses solutions de 1 à 4 et modifient 5-3 (conflits). Récupérer un dossier précis avec `git checkout upstream/main -- <dossier>` si besoin.
 
 ## Pièges connus
 
@@ -38,6 +49,13 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 - Si `localhost` répond 404 : un ancien serveur tourne depuis un autre dossier → utiliser un autre port ou `--directory`.
 
 ## Journal des opérations
+
+### 2026-11-24 — Claude — Exercices du cours (1 à 8) + renommage Wiam-*
+- Renommage : 5-AvionAttaquant → Wiam-AvionAttaquant, 6-WiamSnake → Wiam-Snake, 7-Boids (WebGPU) → Wiam-BoidsWebGPU ; références mises à jour.
+- Import des dossiers de départ du prof 5-1, 5-2, 5-3, 6, 7, 8 (commit fb97fa5 du dépôt du prof, sans ses solutions).
+- Exercices des transparents faits dans 1-Seek, 2-PursueEvade, 3-Arrival, 4-Wander, 5-3, 6, 7, 8 ; une `N-Specification.md` par dossier avec les réponses aux questions du cours.
+- Bugs du départ corrigés : separate() (6), boundaries() (6, 7), wander non appliqué (4), image de poisson (casse, 7), deux classes dans vehicle.js (3).
+- Tests : navigateur sans écran, aucune erreur, 35 à 60 fps.
 
 ### 2026-11-24 — Claude — Wiam-BoidsWebGPU
 - Murmuration de boids en WebGPU (inspirée de la démo jtsorlinis.github.io/BoidsWebGPU montrée en cours) : grille spatiale + tri sur la carte graphique, séparation / alignement / cohésion, oiseaux qui battent des ailes, ciel et champ, vues 2D / 3D, caméra libre.

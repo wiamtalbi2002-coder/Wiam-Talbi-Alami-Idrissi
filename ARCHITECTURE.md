@@ -22,7 +22,7 @@ Ne sont pas des Vehicle : les structures de données (chemin, champ de vecteurs)
 
 ## 3. Structure du dépôt
 
-- `1-Seek/` … `4-Wander/` : exemples du prof (et leurs corrections). Chaque dossier est autonome : `index.html`, `libraries/` (p5.js 1.7), `vehicle.js`, `sketch.js`, et une spécification `N-Specification.md` quand on y ajoute des tâches.
+- `1-Seek/` … `8-EvolutionarySteeringBehavior/` : exemples du prof et mes exercices (panneau `controlPanel.js` copié dans chaque dossier). Chaque dossier est autonome : `index.html`, `libraries/` (p5.js 1.7), `vehicle.js`, `sketch.js`, et une spécification `N-Specification.md` quand on y ajoute des tâches.
 - `Wiam-AvionAttaquant/` : l'avion attaquant, la cible qui se défend (version autonome, p5.js 2.4).
 - `Wiam-Snake/` : le jeu de serpent (version autonome, p5.js 2.4).
 - `steering-p5/` : le premier projet complet (classe `Vehicle` partagée, tâches 1 à 4, docs, README automatique).

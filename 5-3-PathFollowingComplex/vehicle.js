@@ -43,20 +43,23 @@ class Vehicle {
   // que l'on verra plus tard
   applyBehaviors(vehicles, path) {
     // Suivi de chemin, le résultat est la force f
-    let f = this.follow(path);
+    // (inutile de le calculer pour un véhicule qui déambule : poids 0)
+    let f = this.followPathWeight > 0 ? this.follow(path) : createVector(0, 0);
     // separation des autres véhicules, le resultat est la force s
     let s = this.separate(vehicles);
-    //let w = this.wander();
+    // Exercice : les véhicules verts déambulent (wander). On active la
+    // force w, qui était en commentaire ; elle vaut 0 pour les autres.
+    let w = this.wanderWeight > 0 ? this.wander() : createVector(0, 0);
 
-    // On fait une somme pondérée des deux forces
+    // On fait une somme pondérée des trois forces
     f.mult(this.followPathWeight);
     s.mult(this.separateWeight); // essayez zéro ici !!!!
-    //w.mult(this.wanderWeight);
+    w.mult(this.wanderWeight);
 
     // On applique les forces au véhicule
     this.applyForce(f);
     this.applyForce(s);
-    //this.applyForce(w);
+    this.applyForce(w);
   }
 
   applyForce(force) {
