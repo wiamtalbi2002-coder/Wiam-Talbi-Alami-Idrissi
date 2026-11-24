@@ -1,4 +1,7 @@
-class Vehicle {
+﻿class Vehicle {
+  // Mode debug partagé par tous les véhicules (touche D ou case à cocher).
+  static debug = false;
+
   constructor(x, y) {
     // position du véhicule
     this.pos = createVector(x, y);
@@ -41,6 +44,21 @@ class Vehicle {
     // et on limite cette force à la longueur maxForce
     force.limit(this.maxForce);
 
+    return force;
+  }
+
+  // arrive : comme seek, mais le véhicule ralentit dans un rayon
+  // slowingDistance autour de la cible et s'arrête dessus (Reynolds).
+  arrive(target, slowingDistance = 100) {
+    let desiredSpeed = p5.Vector.sub(target, this.pos);
+    let distance = desiredSpeed.mag();
+    let speed = this.maxSpeed;
+    if (distance < slowingDistance) {
+      speed = map(distance, 0, slowingDistance, 0, this.maxSpeed);
+    }
+    desiredSpeed.setMag(speed);
+    let force = p5.Vector.sub(desiredSpeed, this.vel);
+    force.limit(this.maxForce);
     return force;
   }
 
@@ -103,8 +121,10 @@ class Vehicle {
     
     pop();
 
-    // dessin sous la forme d'une flèche du vecteur vitesse
-    this.drawVelocityVector();
+    // dessin sous la forme d'une flèche du vecteur vitesse (en mode debug)
+    if (Vehicle.debug === true) {
+      this.drawVelocityVector();
+    }
   }
 
   drawVelocityVector() {

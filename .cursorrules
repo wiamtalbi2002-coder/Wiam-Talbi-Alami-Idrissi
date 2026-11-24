@@ -1,0 +1,8 @@
+﻿Lire AGENTS.md, ARCHITECTURE.md et HANDOFF.md avant toute modification.
+
+- p5.js, steering behaviors de Craig Reynolds (cours de Michel Buffa).
+- Une classe maximum par fichier (sauf classe interne).
+- Tout élément graphique animé ou fixe-mais-mobile est un Vehicle (ou sous-classe), mû par des forces de pilotage.
+- Objets spécialisés = sous-classes de Vehicle.
+- Debug : touche D + case à cocher synchronisées ; vecteurs vitesse en rouge.
+- Chaque dossier numéroté est autonome. Après chaque opération : mettre à jour HANDOFF.md.
