@@ -1,0 +1,4 @@
+#!/bin/sh
+# Régénère README.md et index.html avant chaque commit.
+node scripts/update-readme.mjs || exit 1
+git add README.md index.html

@@ -1,0 +1,17 @@
+{
+  "name": "steering-p5",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Applications p5.js basées sur les steering behaviors de Craig Reynolds.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "readme": "node scripts/update-readme.mjs",
+    "readme:watch": "node scripts/update-readme.mjs --watch",
+    "readme:check": "node scripts/update-readme.mjs --check",
+    "prepare": "git config core.hooksPath .githooks || exit 0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

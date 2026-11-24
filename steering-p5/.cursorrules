@@ -1,0 +1,8 @@
+Lire AGENTS.md, ARCHITECTURE.md et HANDOFF.md avant toute modification.
+
+- p5.js 2.x, mode global, steering behaviors de Craig Reynolds.
+- Une classe maximum par fichier (sauf classe interne), fichier = nom de classe.
+- Tout élément graphique animé ou fixe-mais-mobile est un Vehicle (ou sous-classe), mû par des forces de pilotage.
+- Objets spécialisés = sous-classes de Vehicle (applyBehaviors + show).
+- Debug : touche D + case à cocher synchronisées ; vecteur vitesse rouge.
+- Après chaque opération : mettre à jour HANDOFF.md, puis npm run readme.

@@ -1,0 +1,28 @@
+name: README auto
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/update-readme.mjs
+      - name: Commit si changement
+        run: |
+          if ! git diff --quiet -- README.md index.html; then
+            git config user.name "readme-bot"
+            git config user.email "readme-bot@users.noreply.github.com"
+            git add README.md index.html
+            git commit -m "docs: mise à jour automatique du README [skip ci]"
+            git push
+          fi

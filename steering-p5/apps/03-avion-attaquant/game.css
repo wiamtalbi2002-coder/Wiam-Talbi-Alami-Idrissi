@@ -1,0 +1,132 @@
+/* game.css — interface HTML par-dessus le canvas 3D (WEBGL) :
+   tableau de bord, bannière de vague, radio, message d'activation du son. */
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #8c9aa3;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Panneau de réglages compact (propre à ce jeu : laisse plus de place à
+   la vue 3D). Les autres applications gardent le panneau standard. */
+.control-panel {
+  font-size: 12px;
+}
+
+.control-panel__header {
+  padding: 4px 12px;
+}
+
+.control-panel__body {
+  gap: 2px 14px;
+  padding: 2px 12px 6px;
+}
+
+.control-panel__row {
+  min-width: 0;
+  gap: 6px;
+}
+
+.control-panel__label {
+  width: auto;
+  white-space: nowrap;
+}
+
+.control-panel__slider {
+  width: 80px;
+  margin: 0;
+}
+
+.control-panel__value {
+  width: 30px;
+}
+
+.control-panel__checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.control-panel__checkbox input {
+  margin: 0;
+}
+
+.hud {
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  padding: 10px 14px;
+  min-width: 210px;
+  background: rgba(10, 12, 8, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #eef0e6;
+  font-size: 15px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.hud b {
+  color: #ffd84a;
+}
+
+.banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 40%;
+  text-align: center;
+  color: #ffd84a;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px #000, 0 2px 0 #000;
+  pointer-events: none;
+}
+
+.sound-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  color: #ffd84a;
+  font-size: 16px;
+  text-shadow: 0 1px 2px #000;
+  pointer-events: none;
+}
+
+.radio {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.radio__line {
+  padding: 6px 10px;
+  background: rgba(8, 20, 10, 0.72);
+  border-left: 3px solid #7cff8a;
+  color: #c9f7cf;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 14px;
+  animation: radio-fade 6s forwards;
+}
+
+.radio__callsign {
+  color: #7cff8a;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+@keyframes radio-fade {
+  0% { opacity: 0; transform: translateX(20px); }
+  6% { opacity: 1; transform: none; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
