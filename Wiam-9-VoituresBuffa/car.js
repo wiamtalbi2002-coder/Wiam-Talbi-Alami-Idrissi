@@ -28,7 +28,9 @@ class Car extends Vehicle {
     this.lectures = new Array(n).fill(0);
     this.impacts = new Array(n).fill(null);
 
-    this.brain = brain ? brain.copy() : new NeuralNetwork([n + 1, params.neuronesCaches, 2]);
+    // [entrées, couche cachée × nbCouches, sorties] — ex. [8, 10, 10, 2]
+    const caches = new Array(params.couchesCachees).fill(params.neuronesCaches);
+    this.brain = brain ? brain.copy() : new NeuralNetwork([n + 1, ...caches, 2]);
     this.hue = (hue + 360) % 360;
     this.elite = false;
 

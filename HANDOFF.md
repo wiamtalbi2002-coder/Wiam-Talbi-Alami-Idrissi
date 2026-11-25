@@ -52,6 +52,11 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 
 ## Journal des opérations
 
+### 2026-11-25 — Claude — Couches cachées + mutation adaptative (Wiam-9-VoituresBuffa)
+- Curseur « Couches cachées » (1 à 4) ; mesure : 1 couche 34 %, 2 couches 24 %, 3 couches 19 % (plus de couches = apprentissage plus lent en neuroévolution).
+- Mutation adaptative (l'amplitude monte quand la population stagne).
+- Bug du circuit corrigé : bords radiaux → route pincée / impossible ; maintenant ligne du milieu lissée + bords perpendiculaires.
+
 ### 2026-11-25 — Claude — Voitures neuroévolution (Buffa et Bruno)
 - `Wiam-9-VoituresBuffa/` : réécriture du dossier 9 de Buffa (une classe par fichier) ; 10 bugs ou limites corrigés (console.log dans predict, fitness 2^n → Infinity, finished jamais vrai, checkpoint par droite infinie…) ; ajouts : cerveau dessiné en direct, courbe de progrès, élitisme, croisement, couleurs héritées, course contre l'IA, sauvegarde du champion. Voir `9-Specification.md`.
 - `Wiam-9-VoituresBruno/` : copie de `REPO_BRUNO_VASSELLE/.../9-VoitureSuitCircuit genetic algo`, réparée (assets.js et assets/ jamais publiés à cause de son .gitignore, bug dispose de TF.js 1.1, fonctions save* absentes, bibliothèques en local) ; ajouts dans `wiam*.js` via registerMethod('post') et en enveloppant finishRace.

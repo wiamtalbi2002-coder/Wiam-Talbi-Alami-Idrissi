@@ -24,6 +24,7 @@ Marche sans Internet (p5.js 1.7 local, pas de TensorFlow).
 | Pas de vitesse en entrée | Le réseau ne peut pas savoir s'il doit freiner | Vitesse ajoutée aux entrées |
 | Voitures dessinées `cycles + 1` fois par image | Calcul inutile | Dessin une fois par image |
 | Chaque rayon testé contre les 120 murs | Lent | Seulement les murs proches du checkpoint courant |
+| Bords du circuit décalés vers le centre de l'écran (direction radiale) | Quand le rayon change vite, la route se pince jusqu'à se fermer : circuit **impossible**, toute la population reste bloquée au même endroit (j'ai vu 24 % pendant 120 générations, avec 1, 2 ou 3 couches) | Ligne du milieu lissée, bords décalés **perpendiculairement** à la route : largeur constante |
 
 ## Ce que j'ai ajouté
 
@@ -36,8 +37,24 @@ Marche sans Internet (p5.js 1.7 local, pas de TensorFlow).
 | 🏁 Mode « Je conduis » (flèches) | Faire la course contre l'IA avec la même physique de steering ; meilleur tour et crashs |
 | Records fêtés (confettis = `Confetti extends Vehicle`) | Record de distance, puis record de tour une fois la course réussie |
 | Télécharger / charger / reprendre le champion | Garder un cerveau entraîné (fichier JSON et sauvegarde du navigateur) |
-| Curseurs : population, mutation, élites, portée, durée de vie, sinuosité, largeur, capteurs, neurones cachés, vitesse de simulation | Expérimenter |
+| Curseurs : population, mutation, élites, portée, durée de vie, sinuosité, largeur, capteurs, neurones cachés, couches cachées, vitesse de simulation | Expérimenter |
 | Nouveau circuit à chaque génération (case) | Avec : la voiture apprend à **conduire** (généralise). Sans : elle **apprend par cœur** un circuit |
+
+## Plus de couches = plus intelligent ? Non ! (mon expérience)
+
+Curseur « Couches cachées » (1 à 4). Mesure : 3 circuits identiques pour chaque réglage (mêmes graines), part moyenne de la course faite par toute la population entre les générations 16 et 25.
+
+| Couches cachées (10 neurones) | Poids à régler | Moyenne gén. 16-25 |
+|---|---:|---:|
+| 1 | 112 | **34 %** |
+| 2 | 222 | 24 % |
+| 3 | 332 | 19 % |
+
+Plus de couches = plus de poids que les mutations doivent trouver au hasard : l'espace de recherche explose et une mutation a plus de chances de casser quelque chose. Sans rétropropagation (pas de gradient), un petit réseau apprend plus vite. Les couches profondes servent quand on a un gradient (apprentissage supervisé, comme le mode « maître » de Bruno) ou un problème plus complexe.
+
+## Mutation adaptative : l'algorithme se règle tout seul
+
+Case « 🧬 Mutation adaptative » (cochée par défaut). Si la meilleure distance (ou, une fois la course réussie, le meilleur tour) ne s'améliore plus, l'amplitude des mutations monte toute seule (jusqu'à ×5) pour explorer plus loin ; dès qu'un record tombe, elle redescend pour affiner. Affiché en bas à droite : « Mutation : 0.90 🔥 (bloquée depuis 6 gén.) ». C'est l'idée de l'exploration / exploitation.
 
 ## Expériences à montrer
 
@@ -46,6 +63,8 @@ Marche sans Internet (p5.js 1.7 local, pas de TensorFlow).
 3. **Amplitude de mutation 1,5** (comme Buffa) **vs 0,3** : les grosses mutations cassent les bons cerveaux.
 4. **Nouveau circuit décoché** : apprentissage plus rapide, mais le champion échoue sur un autre circuit (touche N).
 5. **2 neurones cachés vs 10** : un cerveau trop petit n'arrive pas à tout gérer.
+6. **1 couche vs 3 couches** : voir le tableau plus haut.
+7. **Mutation adaptative décochée** : sur un circuit difficile, la population reste plus longtemps bloquée.
 
 ## Fichiers (une classe par fichier)
 

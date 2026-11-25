@@ -11,14 +11,16 @@ const params = {
   population: 100,
   nbRayons: 7,
   neuronesCaches: 10,
+  couchesCachees: 1,
+  mutationAdaptative: true,
   portee: 110,
   tauxMutation: 0.1,
   amplitudeMutation: 0.3,
   elites: 2,
   croisement: true,
   nouveauCircuit: true,
-  sinuosite: 5.5,
-  largeur: 32,
+  sinuosite: 6,
+  largeur: 24,
   dureeDeVie: 40,
   tours: 2,
   vitesseSimulation: 1,
@@ -57,12 +59,12 @@ function zoneCircuit() {
 }
 
 function nouveauCircuit() {
-  return new Track(zoneCircuit(), params.sinuosite, params.largeur, 80);
+  return new Track(zoneCircuit(), params.sinuosite, params.largeur, 100);
 }
 
 function placerVues() {
   const x = width - LARGEUR_COLONNE;
-  const dispo = height - HAUT - 130;
+  const dispo = height - HAUT - 150;
   brainView = new BrainView(x, HAUT, LARGEUR_COLONNE - 10, dispo * 0.58);
   chart = new FitnessChart(x, HAUT + dispo * 0.58 + 8, LARGEUR_COLONNE - 10, dispo * 0.42 - 8);
 }
@@ -73,15 +75,17 @@ function creerPanneau() {
   panel.addSlider('Voitures', 10, 300, params.population, 10, (v) => { params.population = v; });
   panel.addSlider('Taux de mutation', 0, 0.5, params.tauxMutation, 0.01, (v) => { params.tauxMutation = v; });
   panel.addSlider('Amplitude mutation', 0.05, 1.5, params.amplitudeMutation, 0.05, (v) => { params.amplitudeMutation = v; });
+  panel.addCheckbox('🧬 Mutation adaptative (s\'auto-règle)', params.mutationAdaptative, (v) => { params.mutationAdaptative = v; });
   panel.addSlider('Élites gardés', 0, 10, params.elites, 1, (v) => { params.elites = v; });
   panel.addCheckbox('Croisement des parents', params.croisement, (v) => { params.croisement = v; });
   panel.addCheckbox('Nouveau circuit à chaque génération', params.nouveauCircuit, (v) => { params.nouveauCircuit = v; });
   panel.addSlider('Portée des capteurs', 30, 250, params.portee, 5, (v) => { params.portee = v; });
   panel.addSlider('Vie sans checkpoint', 10, 120, params.dureeDeVie, 5, (v) => { params.dureeDeVie = v; });
-  panel.addSlider('Sinuosité', 1, 8, params.sinuosite, 0.5, (v) => { params.sinuosite = v; });
-  panel.addSlider('Largeur route', 25, 80, params.largeur, 1, (v) => { params.largeur = v; });
+  panel.addSlider('Sinuosité', 1, 14, params.sinuosite, 0.5, (v) => { params.sinuosite = v; });
+  panel.addSlider('Largeur route', 16, 70, params.largeur, 1, (v) => { params.largeur = v; });
   panel.addSlider('Capteurs (recommence)', 3, 11, params.nbRayons, 2, (v) => { params.nbRayons = v; recommencer(); });
   panel.addSlider('Neurones cachés (recommence)', 2, 24, params.neuronesCaches, 1, (v) => { params.neuronesCaches = v; recommencer(); });
+  panel.addSlider('Couches cachées (recommence)', 1, 4, params.couchesCachees, 1, (v) => { params.couchesCachees = v; recommencer(); });
   panel.addCheckbox('🏁 Je conduis (flèches) contre l\'IA', params.joueur, (v) => activerJoueur(v));
   panel.addButton('Nouveau circuit (N)', changerCircuit);
   panel.addButton('Recommencer (R)', recommencer);
@@ -159,11 +163,11 @@ function generationSuivante() {
 
 function afficherStats(leader) {
   const x = width - LARGEUR_COLONNE;
-  const y = height - 122;
+  const y = height - 142;
   push();
   noStroke();
   fill(15, 10, 30, 210);
-  rect(x, y, LARGEUR_COLONNE - 10, 112, 10);
+  rect(x, y, LARGEUR_COLONNE - 10, 132, 10);
   fill(255);
   textSize(13);
   textAlign(LEFT, TOP);
@@ -172,6 +176,7 @@ function afficherStats(leader) {
     `Génération ${population.generation} · ${population.cars.length} en course`,
     `En tête : ${leader ? round(leader.ratio() * 100) : 0} % · record ${round(population.record * 100)} %`,
     `Meilleur tour IA : ${sec(population.meilleurTour)}`,
+    `Mutation : ${nf(population.amplitude, 1, 2)}${population.stagnation > 2 ? ' 🔥 (bloquée depuis ' + population.stagnation + ' gén.)' : ''}`,
   ];
   if (player) {
     lignes.push(`Ton meilleur tour : ${sec(player.meilleurTour)} · tours ${player.tours} · crashs ${player.crash}`);
@@ -279,6 +284,7 @@ function utiliserChampion(json) {
   // le cerveau impose le nombre de capteurs et de neurones cachés
   params.nbRayons = sizes[0] - 1;
   params.neuronesCaches = sizes[1];
+  params.couchesCachees = sizes.length - 2;
   recommencer([brain]);
 }
 

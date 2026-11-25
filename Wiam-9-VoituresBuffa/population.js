@@ -22,6 +22,9 @@ class Population {
     this.cars = [];
     this.saved = [];
     this.meilleurTour = null; // en pas de simulation
+    // mutation adaptative : nombre de générations sans meilleure distance
+    this.stagnation = 0;
+    this.amplitude = params.amplitudeMutation;
     for (let i = 0; i < params.population; i++) {
       const graine = cerveauxDeDepart[i];
       const car = new Car(track, params, graine || null, graine ? 320 : random(360));
@@ -72,6 +75,24 @@ class Population {
     const avg = anciens.reduce((s, c) => s + c.ratio(), 0) / anciens.length;
     this.history.push({ best: best.ratio(), avg });
     const nouveauRecord = best.ratio() > this.record;
+
+    // MUTATION ADAPTATIVE (ajout) : si la meilleure distance ne progresse
+    // plus, la population est coincée (souvent un virage trop dur). On
+    // augmente alors l'amplitude des mutations pour explorer plus loin ;
+    // dès qu'un record tombe, on revient à de petites mutations pour
+    // affiner. L'algorithme règle lui-même son exploration.
+    // une fois la course réussie (100 %), le progrès devient le temps au tour
+    const tourAmeliore = this.meilleurTour !== null && (this.tourPrecedent === undefined
+      || this.tourPrecedent === null || this.meilleurTour < this.tourPrecedent);
+    this.tourPrecedent = this.meilleurTour;
+    if (nouveauRecord || tourAmeliore) {
+      this.stagnation = 0;
+    } else {
+      this.stagnation++;
+    }
+    this.amplitude = this.params.mutationAdaptative
+      ? this.params.amplitudeMutation * min(5, 1 + this.stagnation / 3)
+      : this.params.amplitudeMutation;
     if (nouveauRecord || !this.champion) {
       this.record = max(this.record, best.ratio());
       this.champion = { brain: best.brain.copy(), hue: best.hue, ratio: best.ratio(), generation: this.generation };
@@ -102,7 +123,7 @@ class Population {
       } else {
         brain = p1.brain.copy();
       }
-      brain.mutate(this.params.tauxMutation, this.params.amplitudeMutation);
+      brain.mutate(this.params.tauxMutation, this.amplitude);
       enfants.push(new Car(track, this.params, brain, hue + random(-8, 8)));
     }
 

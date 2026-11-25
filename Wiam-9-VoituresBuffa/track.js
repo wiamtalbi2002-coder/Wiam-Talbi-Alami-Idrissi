@@ -18,23 +18,47 @@ class Track {
   build() {
     const { cx, cy, rx, ry } = this.zone;
     const w = this.largeur;
-    this.inside = [];
-    this.outside = [];
-    this.checkpoints = [];
+    // 1. la ligne du milieu : rayon donné par le bruit de Perlin (comme Buffa)
+    const centre = [];
     for (let i = 0; i < this.total; i++) {
       const a = map(i, 0, this.total, 0, TWO_PI);
       const xoff = map(cos(a), -1, 1, 0, this.sinuosite) + this.graine;
       const yoff = map(sin(a), -1, 1, 0, this.sinuosite) + this.graine;
       const n = noise(xoff, yoff);
-      const xr = map(n, 0, 1, w + 60, rx);
-      const yr = map(n, 0, 1, w + 40, ry);
-      const x1 = cx + (xr - w) * cos(a);
-      const y1 = cy + (yr - w) * sin(a);
-      const x2 = cx + (xr + w) * cos(a);
-      const y2 = cy + (yr + w) * sin(a);
-      this.checkpoints.push(new Boundary(x1, y1, x2, y2));
-      this.inside.push(createVector(x1, y1));
-      this.outside.push(createVector(x2, y2));
+      const xr = map(n, 0, 1, w + 60, rx - w);
+      const yr = map(n, 0, 1, w + 40, ry - w);
+      centre.push(createVector(cx + xr * cos(a), cy + yr * sin(a)));
+    }
+    // lissage léger (moyenne sur 3 points, 2 fois) : supprime les pics
+    // trop pointus où les deux bords se croiseraient
+    for (let passe = 0; passe < 2; passe++) {
+      const copie = centre.map((p) => p.copy());
+      for (let i = 0; i < this.total; i++) {
+        const m = createVector(0, 0);
+        for (let k = -1; k <= 1; k++) {
+          m.add(copie[(i + k + this.total) % this.total]);
+        }
+        centre[i] = m.div(3);
+      }
+    }
+    // 2. CORRECTION : Buffa décale les bords de ±largeur vers le centre de
+    // l'écran (direction radiale). Quand le rayon change vite, la route se
+    // pince jusqu'à se fermer : circuit impossible, la population reste
+    // bloquée au même endroit quoi qu'elle apprenne. Ici on décale les bords
+    // PERPENDICULAIREMENT à la route : la largeur est la même partout.
+    this.inside = [];
+    this.outside = [];
+    this.checkpoints = [];
+    for (let i = 0; i < this.total; i++) {
+      const avant = centre[(i - 1 + this.total) % this.total];
+      const apres = centre[(i + 1) % this.total];
+      const tangente = p5.Vector.sub(apres, avant).normalize();
+      const normale = createVector(tangente.y, -tangente.x); // vers l'intérieur
+      const p1 = p5.Vector.add(centre[i], p5.Vector.mult(normale, w));
+      const p2 = p5.Vector.sub(centre[i], p5.Vector.mult(normale, w));
+      this.checkpoints.push(new Boundary(p1.x, p1.y, p2.x, p2.y));
+      this.inside.push(p1);
+      this.outside.push(p2);
     }
     // segments[i] = les 2 murs entre le checkpoint i et le checkpoint i+1
     this.segments = [];
