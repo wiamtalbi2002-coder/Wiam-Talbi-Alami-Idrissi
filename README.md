@@ -2,26 +2,35 @@
 
 Salut ! ici j'explique ce que j'ai fait pour le cours de Michel Buffa sur les steering behaviors, comment je l'ai fait, et surtout les problemes que j'ai eu (il y en a eu beaucoup lol).
 
-## Jouer directement
+## Tous mes projets
 
-- 🐍 Mon jeu de serpent : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-Snake/
-- ✈️ L'avion attaquant : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-AvionAttaquant/
-- 🐦 Les boids en WebGPU (Chrome / Edge) : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-BoidsWebGPU/
-- 🏎️ Voitures qui apprennent à conduire, version Buffa améliorée : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-9-VoituresBuffa/
-- 🧪 Le Steering Lab de Bruno Vasselle, réparé + mes ajouts : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-9-VoituresBruno/
+| Projet | Jouer | Code |
+|---|---|---|
+| 🏎️ Voitures qui apprennent à conduire (Buffa amélioré : couches, mutation adaptative, course contre l'IA) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-9-VoituresBuffa/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/Wiam-9-VoituresBuffa) |
+| 🧪 Steering Lab de Bruno Vasselle (réparé + mes ajouts) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-9-VoituresBruno/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/Wiam-9-VoituresBruno) |
+| 🐍 Mon jeu de serpent | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-Snake/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/Wiam-Snake) |
+| ✈️ L'avion attaquant | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-AvionAttaquant/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/Wiam-AvionAttaquant) |
+| 🐦 Boids en WebGPU (Chrome / Edge) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-BoidsWebGPU/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/Wiam-BoidsWebGPU) |
+| 🌱 steering-p5 (mon premier projet) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/steering-p5/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/steering-p5) |
 
 ## Les exercices du cours
 
 Chaque dossier a sa spec (`N-Specification.md`) avec ce que j'ai fait et les réponses aux questions du cours.
 
-- 1-Seek : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/1-Seek/
-- 2-PursueEvade : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/2-PursueEvade/
-- 3-Arrival : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/3-Arrival/
-- 4-Wander : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/4-Wander/
-- 5-3 suivi de chemin : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/5-3-PathFollowingComplex/
-- 6 évitement d'obstacles : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/6-ObstacleAvoidance/
-- 7 boids : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/7-Boids/
-- 8 évolution + prédateurs : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/8-EvolutionarySteeringBehavior/
+| Projet | Jouer | Code |
+|---|---|---|
+| 1-Seek (seek, flee, dégradé arc-en-ciel) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/1-Seek/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/1-Seek) |
+| 2-PursueEvade (poursuite, évasion) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/2-PursueEvade/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/2-PursueEvade) |
+| 3-Arrival (arrivée, serpent, formation, texte) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/3-Arrival/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/3-Arrival) |
+| 4-Wander (déambulation, Perlin) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/4-Wander/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/4-Wander) |
+| 5-1 projection scalaire (exemple du prof) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/5-1-ScalarProjection/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/5-1-ScalarProjection) |
+| 5-2 suivi de chemin (exemple du prof) | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/5-2-PathFollowing/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/5-2-PathFollowing) |
+| 5-3 suivi de chemin complexe | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/5-3-PathFollowingComplex/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/5-3-PathFollowingComplex) |
+| 6 évitement d'obstacles | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/6-ObstacleAvoidance/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/6-ObstacleAvoidance) |
+| 7 boids | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/7-Boids/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/7-Boids) |
+| 8 évolution + prédateurs | [▶ jouer](https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/8-EvolutionarySteeringBehavior/) | [code](https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi/tree/main/8-EvolutionarySteeringBehavior) |
+
+Tout le dépôt : https://github.com/wiamtalbi2002-coder/Wiam-Talbi-Alami-Idrissi
 
 ## Comment j'ai trouvé le cours
 

@@ -52,6 +52,8 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 
 ## Journal des opérations
 
+### 2026-11-25 — Claude — README : tableau de tous les projets (liens jouer + code)
+
 ### 2026-11-25 — Claude — Couches cachées + mutation adaptative (Wiam-9-VoituresBuffa)
 - Curseur « Couches cachées » (1 à 4) ; mesure : 1 couche 34 %, 2 couches 24 %, 3 couches 19 % (plus de couches = apprentissage plus lent en neuroévolution).
 - Mutation adaptative (l'amplitude monte quand la population stagne).
