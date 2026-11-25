@@ -29,6 +29,8 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
   - `8-EvolutionarySteeringBehavior/` ✅ prédateurs, fuite selon la santé, curseurs.
 - Les projets perso sont préfixés `Wiam-` (renommés depuis 5-AvionAttaquant, 6-WiamSnake, 7-Boids).
 - `Wiam-BoidsWebGPU/` ✅ murmuration WebGPU (Chrome / Edge).
+- `Wiam-9-VoituresBuffa/` ✅ neuroévolution (dossier 9 de Buffa) refaite et améliorée : réseau JS pur, élitisme, croisement, cerveau en direct, courbe, course contre l'IA.
+- `Wiam-9-VoituresBruno/` ✅ « Steering Lab » de Bruno Vasselle réparé (assets manquants, bug TF.js) + mes ajouts branchés sans modifier son code.
 - `Wiam-AvionAttaquant/` ✅ : avion attaquant (pursue + missiles), cibles qui se défendent (evade, dodge, riposte), version 3D avec chars, soldats, radio, sons.
 - `Wiam-Snake/` ✅ : jeu de serpent (intro WIAM en perles, musique Web Audio, ennemis, score, game over).
 - `steering-p5/` ✅ : premier projet (Vehicle partagé, tâches 1 à 4, docs, README auto). Sa version de l'avion est plus ancienne que `Wiam-AvionAttaquant`.
@@ -49,6 +51,11 @@ Passage de relais entre assistants IA (Claude, Codex, Gemini, Copilot, Cursor…
 - Si `localhost` répond 404 : un ancien serveur tourne depuis un autre dossier → utiliser un autre port ou `--directory`.
 
 ## Journal des opérations
+
+### 2026-11-25 — Claude — Voitures neuroévolution (Buffa et Bruno)
+- `Wiam-9-VoituresBuffa/` : réécriture du dossier 9 de Buffa (une classe par fichier) ; 10 bugs ou limites corrigés (console.log dans predict, fitness 2^n → Infinity, finished jamais vrai, checkpoint par droite infinie…) ; ajouts : cerveau dessiné en direct, courbe de progrès, élitisme, croisement, couleurs héritées, course contre l'IA, sauvegarde du champion. Voir `9-Specification.md`.
+- `Wiam-9-VoituresBruno/` : copie de `REPO_BRUNO_VASSELLE/.../9-VoitureSuitCircuit genetic algo`, réparée (assets.js et assets/ jamais publiés à cause de son .gitignore, bug dispose de TF.js 1.1, fonctions save* absentes, bibliothèques en local) ; ajouts dans `wiam*.js` via registerMethod('post') et en enveloppant finishRace.
+- Tests : navigateur sans écran, les voitures apprennent (100 % de la course en quelques générations), aucune erreur.
 
 ### 2026-11-24 — Claude — Exercices du cours (1 à 8) + renommage Wiam-*
 - Renommage : 5-AvionAttaquant → Wiam-AvionAttaquant, 6-WiamSnake → Wiam-Snake, 7-Boids (WebGPU) → Wiam-BoidsWebGPU ; références mises à jour.

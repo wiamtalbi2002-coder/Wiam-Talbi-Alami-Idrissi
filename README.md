@@ -7,6 +7,8 @@ Salut ! ici j'explique ce que j'ai fait pour le cours de Michel Buffa sur les st
 - 🐍 Mon jeu de serpent : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-Snake/
 - ✈️ L'avion attaquant : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-AvionAttaquant/
 - 🐦 Les boids en WebGPU (Chrome / Edge) : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-BoidsWebGPU/
+- 🏎️ Voitures qui apprennent à conduire, version Buffa améliorée : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-9-VoituresBuffa/
+- 🧪 Le Steering Lab de Bruno Vasselle, réparé + mes ajouts : https://wiamtalbi2002-coder.github.io/Wiam-Talbi-Alami-Idrissi/Wiam-9-VoituresBruno/
 
 ## Les exercices du cours
 

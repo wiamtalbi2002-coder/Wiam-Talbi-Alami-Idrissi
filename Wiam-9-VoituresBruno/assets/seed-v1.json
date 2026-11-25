@@ -1,0 +1,7 @@
+{
+  "comment": "Reconstruit : voitures NON entraînées (les cerveaux d'origine ne sont pas dans le dépôt).",
+  "vehicles": [
+    { "version": "sym-dir-1", "name": "graine-1", "span": 1, "angle": 30, "hidden": [9] },
+    { "version": "sym-dir-1", "name": "graine-2", "span": 1, "angle": 30, "hidden": [9] }
+  ]
+}

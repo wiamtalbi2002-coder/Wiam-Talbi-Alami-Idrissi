@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Steering Lab — Bruno Vasselle · MichelUI</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script src="libraries/p5.min.js"></script>
+  <script src="libraries/p5.dom.min.js"></script>
+  <script src="libraries/tf.min.js"></script>
+</head>
+<body>
+  <div id="app"><p class="boot-message">Chargement du laboratoire…</p></div>
+  <noscript>Activez JavaScript pour lancer la simulation.</noscript>
+  <script src="nn.js"></script><script src="ga.js"></script>
+  <script src="ray.js"></script><script src="boundary.js"></script>
+  <script src="track.js"></script><script src="vehicle.js"></script>
+  <script src="assets.js"></script><script src="ui.js"></script>
+  <script src="config.js"></script><script src="test.js"></script>
+  <script src="scenarios.js"></script><script src="archives.js"></script>
+  <script src="controllers/EvaluationController.js"></script>
+  <script src="controllers/SessionController.js"></script>
+  <script src="settings-ui.js"></script><script src="brain-inspector.js"></script><script src="sketch/ui.js"></script>
+  <script src="sketch.js"></script>
+  <!-- Ajouts de Wiam (le code de Bruno n'est pas modifié) -->
+  <script src="controlPanel.js"></script>
+  <script src="wiamPlayerCar.js"></script>
+  <script src="wiamConfetti.js"></script>
+  <script src="wiamProgressChart.js"></script>
+  <script src="wiamAddons.js"></script>
+  <script>
+    // CODEX : Un CDN indisponible doit produire une explication, même si p5 ne peut pas démarrer.
+    if (!window.p5 || !window.tf) document.getElementById('app').textContent =
+      'Bibliothèques indisponibles. Vérifiez votre connexion puis rechargez la page (p5.js / TensorFlow).';
+  </script>
+</body>
+</html>

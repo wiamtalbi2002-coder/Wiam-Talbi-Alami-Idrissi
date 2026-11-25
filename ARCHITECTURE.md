@@ -25,6 +25,8 @@ Ne sont pas des Vehicle : les structures de données (chemin, champ de vecteurs)
 - `1-Seek/` … `8-EvolutionarySteeringBehavior/` : exemples du prof et mes exercices (panneau `controlPanel.js` copié dans chaque dossier). Chaque dossier est autonome : `index.html`, `libraries/` (p5.js 1.7), `vehicle.js`, `sketch.js`, et une spécification `N-Specification.md` quand on y ajoute des tâches.
 - `Wiam-AvionAttaquant/` : l'avion attaquant, la cible qui se défend (version autonome, p5.js 2.4).
 - `Wiam-Snake/` : le jeu de serpent (version autonome, p5.js 2.4).
+- `Wiam-9-VoituresBuffa/` : neuroévolution d'après le dossier 9 de Buffa (p5.js 1.7, réseau de neurones en JS pur).
+- `Wiam-9-VoituresBruno/` : projet de Bruno Vasselle réparé (p5.js 0.8 + TensorFlow.js 1.1 en local) ; mes ajouts sont dans `wiam*.js`.
 - `steering-p5/` : le premier projet complet (classe `Vehicle` partagée, tâches 1 à 4, docs, README automatique).
 
 Pour un nouvel exercice : un nouveau dossier `N-Nom/` autonome (il ne charge jamais de fichiers d'un autre dossier, sinon il ne marche pas sur GitHub Pages), avec sa spécification `N-Specification.md`.
